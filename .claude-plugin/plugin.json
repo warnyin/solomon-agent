@@ -8,10 +8,7 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/warnyin/solomon-agent",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/warnyin/solomon-agent"
-  },
+  "repository": "https://github.com/warnyin/solomon-agent",
   "keywords": [
     "claude-code",
     "claude-code-plugin",
