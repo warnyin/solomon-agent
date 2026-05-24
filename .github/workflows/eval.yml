@@ -1,0 +1,71 @@
+name: eval (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_budget_usd:
+        description: 'Cap budget for this eval run'
+        required: true
+        default: '5.00'
+      spec:
+        description: 'Eval spec to run (or "all")'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - tests/agents/owner-ceo.spec.md
+          - tests/integration/launch-happy-path.spec.md
+          - tests/integration/escalation-trigger.spec.md
+          - tests/security/path-traversal.spec.md
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Preflight
+        run: node scripts/preflight.mjs
+
+      - name: Setup eval env
+        run: |
+          mkdir -p state
+          echo "Budget cap: $${{ inputs.max_budget_usd }}"
+          echo "Spec: ${{ inputs.spec }}"
+
+      - name: Run dry-run harness (Round 18)
+        run: |
+          mkdir -p state
+          node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/basic.json
+          echo "----- dry-run report -----"
+          cat state/dry-run-report.json
+          echo "----- end report -----"
+
+      - name: Emit eval report
+        run: |
+          mkdir -p state/artifacts
+          cat > state/artifacts/eval-report.md << 'EOF'
+          # Eval Report
+
+          ## Inputs
+          - max_budget_usd: ${{ inputs.max_budget_usd }}
+          - spec: ${{ inputs.spec }}
+
+          ## Dry-run summary
+          See state/dry-run-report.json (artifact upload below).
+
+          ## v0.1 limitation
+          Live agent eval requires API key + budget. Dry-run validates structural correctness only
+          (phase machine, role coverage, artifact production). Live runs: manual via /sc:launch.
+          EOF
+
+      - name: Upload eval artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.run_id }}
+          path: state/artifacts/

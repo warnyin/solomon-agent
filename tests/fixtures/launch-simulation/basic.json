@@ -1,0 +1,29 @@
+{
+  "_comment": "Round 18: dry-run harness scenario — basic CLI project. Consumed by scripts/dry-run-harness.mjs",
+  "goal": "build a markdown-to-PDF CLI in Node.js",
+  "project_type": "cli",
+  "complexity": "medium",
+  "role_token_baseline": {
+    "role-pm":           8000,
+    "role-ba":           6000,
+    "role-sa":           15000,
+    "role-tech-lead":    12000,
+    "role-developer":    45000,
+    "role-qa":           20000,
+    "role-security":     18000,
+    "role-devsecops":    12000,
+    "role-infra":        10000,
+    "role-service-desk": 8000
+  },
+  "phases": [
+    { "name": "DISCOVERY", "roles": ["role-pm", "role-ba"] },
+    { "name": "DESIGN",    "roles": ["role-sa", "role-tech-lead", "role-security"] },
+    { "name": "BUILD",     "roles": ["role-developer"] },
+    { "name": "VERIFY",    "roles": ["role-qa", "role-security", "role-devsecops"] },
+    { "name": "HANDOFF",   "roles": ["role-service-desk"] }
+  ],
+  "expect_min_artifacts": 10,
+  "expect_max_tokens": 500000,
+  "expect_max_usd": 5.0,
+  "schema_version": 1
+}

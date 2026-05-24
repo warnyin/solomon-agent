@@ -1,0 +1,42 @@
+# Solomon Agent jargon blocklist — Round 5 #78
+# Override via sc.config.json:jargon_allow:[]
+# Escape block via <!-- ALLOW-JARGON --> HTML comment.
+
+# Buzzwords
+synergy
+leverage
+paradigm
+ecosystem
+holistic
+disruptive
+seamless
+revolutionary
+turnkey
+mission-critical
+
+# Vague qualifiers
+robust
+scalable
+flexible
+intuitive
+user-friendly
+enterprise-grade
+best-of-breed
+cutting-edge
+state-of-the-art
+
+# Empty verbs
+optimize
+streamline
+operationalize
+synergize
+
+# AI-prose tics
+delve
+tapestry
+crucial
+embark
+landscape
+realm
+journey
+unleash

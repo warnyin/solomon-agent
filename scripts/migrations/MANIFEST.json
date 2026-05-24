@@ -1,0 +1,5 @@
+{
+  "version": "0.1.0",
+  "_note": "Round 5 #68 — migrations registered here with SHA256. session-bootstrap.mjs verifies before exec.",
+  "migrations": []
+}

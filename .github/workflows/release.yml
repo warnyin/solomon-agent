@@ -1,0 +1,53 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate manifests
+        run: |
+          npm run lint:plugin
+          node scripts/preflight.mjs
+
+      - name: Verify tag matches plugin.json/marketplace.json/package.json versions
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          PLUGIN_VER=$(node -e "console.log(require('./.claude-plugin/plugin.json').version)")
+          MARKETPLACE_VER=$(node -e "console.log(require('./.claude-plugin/marketplace.json').plugins[0].version)")
+          PKG_VER=$(node -e "console.log(require('./package.json').version)")
+          for V in "$PLUGIN_VER" "$MARKETPLACE_VER" "$PKG_VER"; do
+            if [ "$V" != "$TAG" ]; then
+              echo "ERROR: tag v$TAG but found $V"
+              exit 1
+            fi
+          done
+
+      - name: Extract CHANGELOG entry
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          node -e "
+            const txt = require('fs').readFileSync('CHANGELOG.md', 'utf8');
+            const m = txt.match(new RegExp('## \\\\[$TAG\\\\][^\\n]*\\n([\\\\s\\\\S]*?)(?=\\n## |\\\\Z)'));
+            require('fs').writeFileSync('/tmp/release-notes.md', m ? m[1].trim() : 'No entry in CHANGELOG.md');
+          "
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: /tmp/release-notes.md
+          draft: false
+          prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}

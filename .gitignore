@@ -1,0 +1,29 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Runtime state (per-project, never committed)
+state/project.json
+state/budget.json
+state/events.ndjson
+state/events-sensitive.ndjson
+state/status.ndjson
+state/replay-trace.ndjson
+state/role-acls.json
+state/rate-window.json
+state/dispatch-stack.json
+state/checkpoint.json
+state/bootstrap-summary.md
+state/launch-input.audit.json
+state/session.key
+state/lock
+state/abort.flag
+state/inbox.md
+state/hook-errors.log
+state/artifacts/
+state/archive/
+
+# OS noise
+.DS_Store
+Thumbs.db

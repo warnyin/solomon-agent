@@ -1,0 +1,37 @@
+{
+  "name": "solomon-agent",
+  "version": "0.1.0",
+  "description": "Solomon Agent — Claude Code meta-orchestrator. One slash command summons a 10-role virtual company that runs DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF autonomously, with per-role sign-off gates and resumable checkpoints.",
+  "author": {
+    "name": "ArmLazySong",
+    "email": "arm.lazy.song@gmail.com"
+  },
+  "homepage": "https://github.com/warnyin/solomon-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/warnyin/solomon-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/warnyin/solomon-agent/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test scripts/",
+    "lint:frontmatter": "node scripts/lint-frontmatter.mjs agents/ commands/",
+    "lint:plugin": "node -e \"JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json'))\" && node -e \"JSON.parse(require('fs').readFileSync('.claude-plugin/marketplace.json'))\" && node -e \"JSON.parse(require('fs').readFileSync('hooks/hooks.json'))\"",
+    "build:skills": "node scripts/build-skills.mjs",
+    "build:skills:check": "node scripts/build-skills.mjs --check",
+    "build:codemap": "node scripts/build-codemap.mjs",
+    "build:kb": "node scripts/build-kb-index.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "doctor:fix": "node scripts/doctor.mjs --fix",
+    "dryrun": "node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/basic.json",
+    "verify:log": "node scripts/verify-log.mjs",
+    "estimate": "node scripts/estimate-cost.mjs"
+  },
+  "license": "MIT",
+  "private": true
+}

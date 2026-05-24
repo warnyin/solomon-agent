@@ -1,0 +1,71 @@
+name: ✨ Feature Request
+description: Suggest a new feature or improvement
+title: "[FEAT] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! Please describe what you want and why, not just the implementation.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - New command (/sc:*)
+        - New role agent
+        - New skill
+        - New rule/protocol
+        - Script/automation
+        - Documentation
+        - CI/CD
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user pain. What can't be done today, or is painful?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Your ideal behavior. Be concrete.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Per skills/creative-security-mindset — what other approaches did you weigh?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope estimate
+      description: Files added/changed (rough). v0.1 limits respected?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (your view)
+      options: [Low - nice to have, Medium - blocks workflow, High - blocks adoption, Critical - cannot use plugin]
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues + roadmap
+          required: true
+        - label: This fits Solomon Agent's scope (10-role meta-orchestration plugin)
+          required: true

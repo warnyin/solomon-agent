@@ -1,0 +1,94 @@
+name: 🐛 Bug Report
+description: Report a bug in Solomon Agent
+title: "[BUG] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! For SECURITY issues, see SECURITY.md (do NOT file public issue).
+
+  - type: input
+    id: version
+    attributes:
+      label: Solomon Agent version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: claude_code_version
+    attributes:
+      label: Claude Code version
+      placeholder: "from claude --version"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      options: [Linux, macOS, Windows, Other]
+    validations:
+      required: true
+
+  - type: input
+    id: node_version
+    attributes:
+      label: Node version
+      placeholder: "node --version"
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor_output
+    attributes:
+      label: /sc:doctor output
+      description: Paste output of `/sc:doctor --verbose`
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `/sc:launch "..."`
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Last 50 lines of state/events.ndjson, state/hook-errors.log, or terminal output (REDACT secrets/PII)
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I ran `/sc:doctor` and pasted output
+          required: true
+        - label: I redacted secrets, API keys, and PII from logs
+          required: true
+        - label: I searched existing issues
+          required: true
