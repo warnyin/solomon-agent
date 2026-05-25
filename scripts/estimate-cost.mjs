@@ -40,23 +40,49 @@ function parseArgs(argv) {
   return out;
 }
 
+// Keyword tables (TH + EN). English keywords use \b boundaries; Thai keywords
+// rely on substring match because JS \b is ASCII-only and won't fire on Thai script.
+const KW = {
+  small_en:    /\b(simple|tiny|small|fix|bug|patch|typo|trivial)\b/,
+  small_th:    /(แก้บั?[คก]|แก้ไขเล็กน้อย|นิดเดียว|เล็ก ?ๆ|ปะ|แค่ลอง)/,
+  xl_en:       /\b(platform|enterprise|multi[- ]?tenant|distributed|microservices|saas|workflow engine|flow engine|automation platform|low[- ]?code|no[- ]?code|directus|n8n|zapier|airflow)\b/,
+  xl_th:       /(แพลตฟอร์ม|องค์กร|มัลติเทเนนต์|ไมโครเซอร์วิส|ระบบครบวงจร|ระบบใหญ่|automation|workflow|ออโตเมชั?น|เวิร์[คก]โฟลว์|โน[- ]?โค้ด|โล[- ]?โค้ด|flow engine)/,
+  large_en:    /\b(app|application|system|service|integration|pipeline|dashboard|backend|api)\b/,
+  large_th:    /(แอ[ปพ๊]|ระบบ|บริการ|ไปป์ไลน์|แดชบอร์ด|เชื่อมต่อ|backend|api)/,
+  cli_en:      /\b(cli|command|terminal|shell)\b/,
+  cli_th:      /(คอมมานด์|เทอร์มินัล|บรรทัดคำสั่ง|shell)/,
+  library_en:  /\b(library|sdk|package|module)\b/,
+  library_th:  /(ไลบรารี|แพ?[คก]เกจ|โมดูล|sdk)/,
+  web_en:      /\b(web|website|webapp|saas|dashboard|frontend)\b/,
+  web_th:      /(เว็?บไซต์?|แดชบอร์ด|หน้าเว็?บ|frontend)/,
+  mobile_en:   /\b(mobile|ios|android|flutter|native)\b/,
+  mobile_th:   /(มือถือ|แอนดรอยด์|ไอโอเอส|แอปมือถือ|ios|android|flutter)/,
+  pipeline_en: /\b(pipeline|etl|ingest|batch|stream|data)\b/,
+  pipeline_th: /(ไปป์ไลน์|ข้อมูล|สตรีม|แบทช์|etl)/,
+  research_en: /\b(research|analyze|study|investigation)\b/,
+  research_th: /(วิจัย|วิเคราะห์|ศึกษา|สำรวจ|ตรวจสอบ)/,
+};
+
+const matches = (t, ...keys) => keys.some(k => KW[k].test(t));
+
 function classifyComplexity(goalText) {
   const t = goalText.toLowerCase();
   const len = goalText.length;
-  if (/\b(simple|tiny|small|fix|bug|patch|typo)\b/.test(t) || len < 50) return 'small';
-  if (/\b(platform|enterprise|multi-tenant|distributed|microservices|saas)\b/.test(t)) return 'xl';
-  if (/\b(app|system|service|integration|pipeline|dashboard)\b/.test(t) || len > 200) return 'large';
+  // Intent beats length: check xl/large keywords BEFORE the len<30 small fallback.
+  if (matches(t, 'xl_en', 'xl_th')) return 'xl';
+  if (matches(t, 'large_en', 'large_th') || len > 200) return 'large';
+  if (matches(t, 'small_en', 'small_th') || len < 30) return 'small';
   return 'medium';
 }
 
 function classifyProjectType(goalText) {
   const t = goalText.toLowerCase();
-  if (/\b(cli|command|terminal|shell)\b/.test(t)) return 'cli';
-  if (/\b(library|sdk|package|module)\b/.test(t)) return 'library';
-  if (/\b(web|website|webapp|saas|dashboard|frontend)\b/.test(t)) return 'web-app';
-  if (/\b(mobile|ios|android|flutter|native)\b/.test(t)) return 'mobile-app';
-  if (/\b(pipeline|etl|ingest|batch|stream|data)\b/.test(t)) return 'data-pipeline';
-  if (/\b(research|analyze|study|investigation)\b/.test(t)) return 'research';
+  if (matches(t, 'cli_en', 'cli_th')) return 'cli';
+  if (matches(t, 'library_en', 'library_th')) return 'library';
+  if (matches(t, 'web_en', 'web_th')) return 'web-app';
+  if (matches(t, 'mobile_en', 'mobile_th')) return 'mobile-app';
+  if (matches(t, 'pipeline_en', 'pipeline_th')) return 'data-pipeline';
+  if (matches(t, 'research_en', 'research_th')) return 'research';
   return 'unknown';
 }
 
