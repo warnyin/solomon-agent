@@ -61,7 +61,7 @@ jobs:
 
           ## v0.1 limitation
           Live agent eval requires API key + budget. Dry-run validates structural correctness only
-          (phase machine, role coverage, artifact production). Live runs: manual via /sc:launch.
+          (phase machine, role coverage, artifact production). Live runs: manual via /solomon-agent:launch.
           EOF
 
       - name: Upload eval artifacts

@@ -5,7 +5,7 @@ Fresh project dir; no existing `state/`.
 
 ## Input
 ```
-/sc:launch "build a CLI todo app in Node.js with file-based storage"
+/solomon-agent:launch "build a CLI todo app in Node.js with file-based storage"
 ```
 
 ## Expected Artifacts

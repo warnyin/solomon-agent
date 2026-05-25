@@ -1,9 +1,9 @@
 ---
-description: Graceful shutdown of in-flight orchestrator. State preserved. Owner-ceo terminates after current dispatch completes. Recovery via /sc:replay or /sc:failover.
+description: Graceful shutdown of in-flight orchestrator. State preserved. Owner-ceo terminates after current dispatch completes. Recovery via /solomon-agent:replay or /solomon-agent:failover.
 argument-hint: "[reason]"
 ---
 
-# /sc:abort
+# /solomon-agent:abort
 
 ## Procedure
 1. Get current phase from `state/project.json`
@@ -19,5 +19,5 @@ argument-hint: "[reason]"
 - `state/lock` (released only after owner detects flag)
 
 ## Recovery
-- `/sc:replay <last-phase>` — restart phase from clean state
-- `/sc:failover` — backup-owner reads `state/checkpoint.json`
+- `/solomon-agent:replay <last-phase>` — restart phase from clean state
+- `/solomon-agent:failover` — backup-owner reads `state/checkpoint.json`

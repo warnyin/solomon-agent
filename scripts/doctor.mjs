@@ -149,7 +149,7 @@ else check('node_version', 'fail', `Node ${process.versions.node} < 18 required`
 // 14. codemap_stale
 {
   const m = await readJsonSafe(path.join(ROOT, 'docs/codemap/manifest.json'));
-  if (!m) check('codemap_stale', 'warn', 'docs/codemap/ not built yet — run /sc:codemap');
+  if (!m) check('codemap_stale', 'warn', 'docs/codemap/ not built yet — run /solomon-agent:codemap');
   else {
     const ageDays = (Date.now() - new Date(m.built_at)) / (1000 * 60 * 60 * 24);
     if (ageDays > 7) check('codemap_stale', 'warn', `last built ${ageDays.toFixed(1)} days ago`);
@@ -160,7 +160,7 @@ else check('node_version', 'fail', `Node ${process.versions.node} < 18 required`
 // 15. kb_index
 {
   const m = await readJsonSafe(path.join(ROOT, 'docs/kb/manifest.json'));
-  if (!m) check('kb_index', 'warn', 'docs/kb/ not built yet — run /sc:kb');
+  if (!m) check('kb_index', 'warn', 'docs/kb/ not built yet — run /solomon-agent:kb');
   else check('kb_index', 'pass', `${m.artifacts_indexed} artifacts indexed`);
 }
 

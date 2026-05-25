@@ -12,7 +12,7 @@ After 30+ artifacts in a project, finding "the design decision about auth" via g
 |---|---|---|
 | `feature_complete` | `rules/handoff-checkpoint-protocol.md` | full rebuild |
 | `phase_exit` | owner-ceo | full rebuild |
-| `manual` | `/sc:kb` user command | full rebuild |
+| `manual` | `/solomon-agent:kb` user command | full rebuild |
 | `artifact_signed_off` | role completion (status=approved) | incremental (new artifact only) |
 
 ## File Layout
@@ -44,7 +44,7 @@ docs/kb/
 ├── decisions.md                # Cross-cut: every Key Decision / ADR / waiver
 ├── glossary.md                 # Merged glossaries from all role-ba domain-models
 ├── risks.md                    # Cross-cut: every artifact's risks/limits
-├── search-index.json           # Lightweight full-text search index (for /sc:kb query)
+├── search-index.json           # Lightweight full-text search index (for /solomon-agent:kb query)
 └── manifest.json               # KB metadata
 ```
 
@@ -79,7 +79,7 @@ docs/kb/
 | ... |
 
 ## Search
-Run `/sc:kb <query>` to search artifact bodies + titles via `search-index.json`.
+Run `/solomon-agent:kb <query>` to search artifact bodies + titles via `search-index.json`.
 ```
 
 ## by-phase/<PHASE>.md Structure
@@ -188,7 +188,7 @@ Run `/sc:kb <query>` to search artifact bodies + titles via `search-index.json`.
 
 Search is greedy substring over `tokens` + `title` + `headings`; no fancy tf-idf in v0.1. Returns ranked artifact list with snippet from first matching line.
 
-## How `/sc:kb <query>` works
+## How `/solomon-agent:kb <query>` works
 
 1. Read `docs/kb/search-index.json`
 2. Tokenize query (lowercase, strip stopwords)
@@ -218,7 +218,7 @@ Search is greedy substring over `tokens` + `title` + `headings`; no fancy tf-idf
 
 ## Integration
 
-- `commands/kb.md` — `/sc:kb` view + search
+- `commands/kb.md` — `/solomon-agent:kb` view + search
 - `scripts/build-kb-index.mjs` — implementation
 - `rules/handoff-checkpoint-protocol.md` — `feature_complete` triggers rebuild
 - `rules/codemap-protocol.md` — sibling system (codemap = code, KB = artifacts)

@@ -1,20 +1,20 @@
 ---
-description: One-command-does-everything router. Reads project state, classifies your intent, asks 1-3 clarifying questions if needed, then routes to the right existing /sc:* command OR starts a new project. Use this when you don't want to remember which slash command to type. Per skills/intent-router.
+description: One-command-does-everything router. Reads project state, classifies your intent, asks 1-3 clarifying questions if needed, then routes to the right existing /solomon-agent:* command OR starts a new project. Use this when you don't want to remember which slash command to type. Per skills/intent-router.
 argument-hint: "<anything in natural language>"
 ---
 
-# /sc:do
+# /solomon-agent:do
 
-You are the `/sc:do` runner — the **meta-command**. Your job: read state, understand intent, optionally ask back, then route. You do NOT replace other commands; you orchestrate them.
+You are the `/solomon-agent:do` runner — the **meta-command**. Your job: read state, understand intent, optionally ask back, then route. You do NOT replace other commands; you orchestrate them.
 
 > Inspired by the ergonomics of ECC's `/goal` — but here we're a router, not a Stop-hook condition setter.
 
 ## Operating Principle
 
-Every existing `/sc:*` command stays unchanged. `/sc:do` is a thin intent classifier that picks the right one (or asks the user when ambiguous).
+Every existing `/solomon-agent:*` command stays unchanged. `/solomon-agent:do` is a thin intent classifier that picks the right one (or asks the user when ambiguous).
 
 ```
-user: /sc:do <freeform>
+user: /solomon-agent:do <freeform>
    │
    ▼
 1. Read state (project.json + role-state-board + latest checkpoint + pending escalations)
@@ -54,32 +54,32 @@ Apply rules IN ORDER (first match wins). Free-form `$ARGUMENTS` is matched case-
 | If state says... | And user says... | → Route to |
 |---|---|---|
 | `pending_escalations[].length > 0` | anything | **Surface escalation first** — refuse to route until user answers |
-| `has_project=false` | anything sounding like a project idea ("build X", "ทำ X", "create Y") | `/sc:launch <idea>` |
+| `has_project=false` | anything sounding like a project idea ("build X", "ทำ X", "create Y") | `/solomon-agent:launch <idea>` |
 | `has_project=false` | "status" / "help" / "what can you do" | Reply with this command's own help |
-| `has_project=true` AND `status=complete` | "new" / "another" / "ใหม่" | offer archive-vs-append (per `/sc:launch §1.2`) |
-| `has_project=true` AND `active_role != null` AND last_checkpoint_at > 1hr ago | anything | suggest `/sc:resume` first |
+| `has_project=true` AND `status=complete` | "new" / "another" / "ใหม่" | offer archive-vs-append (per `/solomon-agent:launch §1.2`) |
+| `has_project=true` AND `active_role != null` AND last_checkpoint_at > 1hr ago | anything | suggest `/solomon-agent:resume` first |
 
 ### Keyword routing (when state alone isn't decisive)
 
 | User intent signal (TH/EN keywords) | → Route to |
 |---|---|
-| "continue", "ต่อ", "resume", "ทำต่อ", "พิจารณาต่อ" | `/sc:resume` |
-| "status", "ดู", "เช็ค", "where", "อยู่ไหนแล้ว", "phase ไหน" | `/sc:status` |
-| "stop", "abort", "หยุด", "ยกเลิก", "cancel" | `/sc:abort` |
-| "replay", "ซ้ำ", "redo", "ทำใหม่", "rewind to <phase>" | `/sc:replay <PHASE>` |
-| "swap owner", "failover", "owner ค้าง", "owner หยุด" | `/sc:failover` |
-| "cost", "ราคา", "ใช้ token เท่าไหร่", "how much" | `/sc:cost-report` |
-| "stats", "metrics", "across projects", "ทุก project" | `/sc:stats` |
-| "compact", "archive", "clean", "เก็บ" | `/sc:compact` |
-| "doctor", "health", "check", "diagnose", "ตรวจสุขภาพ", "เช็คระบบ", "preflight" | `/sc:doctor` |
-| "codemap", "code TOC", "structure", "modules", "files", "สารบัญ code" | `/sc:codemap` |
-| "kb", "knowledge", "find <X>", "search <X>", "decisions", "risks", "ค้นหา" | `/sc:kb <query>` |
-| "add info: X", "context: X", "inject X", "ใส่ข้อมูล X" | `/sc:inject "<X>"` |
-| Brand-new project description AND `has_project=false` | `/sc:launch "<text>"` |
+| "continue", "ต่อ", "resume", "ทำต่อ", "พิจารณาต่อ" | `/solomon-agent:resume` |
+| "status", "ดู", "เช็ค", "where", "อยู่ไหนแล้ว", "phase ไหน" | `/solomon-agent:status` |
+| "stop", "abort", "หยุด", "ยกเลิก", "cancel" | `/solomon-agent:abort` |
+| "replay", "ซ้ำ", "redo", "ทำใหม่", "rewind to <phase>" | `/solomon-agent:replay <PHASE>` |
+| "swap owner", "failover", "owner ค้าง", "owner หยุด" | `/solomon-agent:failover` |
+| "cost", "ราคา", "ใช้ token เท่าไหร่", "how much" | `/solomon-agent:cost-report` |
+| "stats", "metrics", "across projects", "ทุก project" | `/solomon-agent:stats` |
+| "compact", "archive", "clean", "เก็บ" | `/solomon-agent:compact` |
+| "doctor", "health", "check", "diagnose", "ตรวจสุขภาพ", "เช็คระบบ", "preflight" | `/solomon-agent:doctor` |
+| "codemap", "code TOC", "structure", "modules", "files", "สารบัญ code" | `/solomon-agent:codemap` |
+| "kb", "knowledge", "find <X>", "search <X>", "decisions", "risks", "ค้นหา" | `/solomon-agent:kb <query>` |
+| "add info: X", "context: X", "inject X", "ใส่ข้อมูล X" | `/solomon-agent:inject "<X>"` |
+| Brand-new project description AND `has_project=false` | `/solomon-agent:launch "<text>"` |
 
 ### Compound intents
 
-If user says "show me the design then continue" → execute sequentially: `/sc:kb design` → ask "found N artifacts; continue with /sc:resume?" → on yes → `/sc:resume`.
+If user says "show me the design then continue" → execute sequentially: `/solomon-agent:kb design` → ask "found N artifacts; continue with /solomon-agent:resume?" → on yes → `/solomon-agent:resume`.
 
 ### Unknown / ambiguous → ASK BACK (Step 3)
 
@@ -90,7 +90,7 @@ If no rule matches with confidence ≥ 0.8, OR multiple rules match equally → 
 Format:
 
 ```
-[BLUE] /sc:do — INTENT CLARIFICATION
+[BLUE] /solomon-agent:do — INTENT CLARIFICATION
 
 Current state:
 - Project: <name or "none">
@@ -102,10 +102,10 @@ Current state:
 I see your request: "<sanitized user text>"
 
 Possible interpretations:
-  (a) <option 1> — will run /sc:<command>
-  (b) <option 2> — will run /sc:<command>
-  (c) <option 3> — will run /sc:<command>
-  (d) new project (use /sc:launch)
+  (a) <option 1> — will run /solomon-agent:<command>
+  (b) <option 2> — will run /solomon-agent:<command>
+  (c) <option 3> — will run /solomon-agent:<command>
+  (d) new project (use /solomon-agent:launch)
   (e) other — explain what you mean
 
 Reply (a/b/c/d/e or freeform).
@@ -113,7 +113,7 @@ Reply (a/b/c/d/e or freeform).
 
 Wait for user reply. On reply → re-classify with the new context (skip back to Step 2).
 
-Hard cap: 3 clarification rounds. If still unclear → "I cannot route this. Try a specific /sc:* command directly (see /sc:do --help)."
+Hard cap: 3 clarification rounds. If still unclear → "I cannot route this. Try a specific /solomon-agent:* command directly (see /solomon-agent:do --help)."
 
 ## Step 4 — Route inline (do NOT shell out)
 
@@ -122,8 +122,8 @@ Once intent confidently classified, **execute the target command's body inline**
 Surface to user: 1-line preamble showing the routing decision, then execute:
 
 ```
-[/sc:do → /sc:resume]
-<then run /sc:resume's full body — pre-flight, verify integrity, surface summary, dispatch owner-ceo>
+[/solomon-agent:do → /solomon-agent:resume]
+<then run /solomon-agent:resume's full body — pre-flight, verify integrity, surface summary, dispatch owner-ceo>
 ```
 
 Routing decision logged as event `do_routed` with payload `{intent_classified, target_command, confidence, asked_back: true|false}`.
@@ -135,41 +135,41 @@ Routing decision logged as event `do_routed` with payload `{intent_classified, t
 Reply with:
 
 ```
-/sc:do — meta-command router
+/solomon-agent:do — meta-command router
 
 Reads state + understands intent in plain Thai/English, then routes to:
-  - /sc:launch (new project)
-  - /sc:resume (continue)
-  - /sc:status, /sc:cost-report, /sc:stats (observability)
-  - /sc:inject (add context), /sc:replay <phase>, /sc:abort, /sc:failover
-  - /sc:codemap, /sc:kb (knowledge navigation)
-  - /sc:compact (cleanup)
+  - /solomon-agent:launch (new project)
+  - /solomon-agent:resume (continue)
+  - /solomon-agent:status, /solomon-agent:cost-report, /solomon-agent:stats (observability)
+  - /solomon-agent:inject (add context), /solomon-agent:replay <phase>, /solomon-agent:abort, /solomon-agent:failover
+  - /solomon-agent:codemap, /solomon-agent:kb (knowledge navigation)
+  - /solomon-agent:compact (cleanup)
 
 Examples:
-  /sc:do ดู status ปัจจุบัน
-  /sc:do ต่อจากที่หยุด
-  /sc:do หา design decision เรื่อง auth
-  /sc:do ทำใหม่ phase BUILD
-  /sc:do build a markdown to PDF CLI
-  /sc:do owner ค้างมา 10 นาที
+  /solomon-agent:do ดู status ปัจจุบัน
+  /solomon-agent:do ต่อจากที่หยุด
+  /solomon-agent:do หา design decision เรื่อง auth
+  /solomon-agent:do ทำใหม่ phase BUILD
+  /solomon-agent:do build a markdown to PDF CLI
+  /solomon-agent:do owner ค้างมา 10 นาที
 
-Don't want routing? Use the underlying command directly. /sc:do is purely additive.
+Don't want routing? Use the underlying command directly. /solomon-agent:do is purely additive.
 ```
 
 ### Forced bypass
 
-`/sc:do --raw <command-text>` → no classification, no asking back; runs the literal text as if user typed `/sc:<command-text>` (still goes through that command's own pre-flight).
+`/solomon-agent:do --raw <command-text>` → no classification, no asking back; runs the literal text as if user typed `/solomon-agent:<command-text>` (still goes through that command's own pre-flight).
 
 ### Forced dry-run
 
-`/sc:do --plan <freeform>` → classify + print routing decision, but DO NOT execute. User confirms with `y` to actually run.
+`/solomon-agent:do --plan <freeform>` → classify + print routing decision, but DO NOT execute. User confirms with `y` to actually run.
 
 ## Anti-Patterns (NEVER DO)
 
 - Asking > 3 clarifying questions (cognitive load; refuse to route at that point)
 - Routing without reading state first (you may suggest the wrong command)
-- Calling a routed command's body if its pre-flight would fail (e.g., `/sc:resume` without a project) — instead, surface the precondition error and suggest alternatives
-- Modifying state in `/sc:do` body (only the routed command writes state)
+- Calling a routed command's body if its pre-flight would fail (e.g., `/solomon-agent:resume` without a project) — instead, surface the precondition error and suggest alternatives
+- Modifying state in `/solomon-agent:do` body (only the routed command writes state)
 - Suppressing pending escalations (they ALWAYS surface first, even if routing was clear)
 
 ## v0.1 limits
@@ -177,14 +177,14 @@ Don't want routing? Use the underlying command directly. /sc:do is purely additi
 - Intent classifier is rule-based (no learned weights yet)
 - Thai keyword coverage is initial set — expand via PRs
 - Multi-step intents like "resume then immediately abort if budget low" not supported (sequence only via separate user turns)
-- `--raw` does not auto-pass complex args; for `/sc:replay BUILD` use `/sc:do --raw "replay BUILD"`
+- `--raw` does not auto-pass complex args; for `/solomon-agent:replay BUILD` use `/solomon-agent:do --raw "replay BUILD"`
 
 ## Integration
 
 - `skills/intent-router/SKILL.md` — the classification technique (rules + state-driven priority)
-- `rules/handoff-checkpoint-protocol.md` — `/sc:do` reads checkpoint/board same as `/sc:resume`
+- `rules/handoff-checkpoint-protocol.md` — `/solomon-agent:do` reads checkpoint/board same as `/solomon-agent:resume`
 - `rules/escalation.md` — pending escalations always surface first (never bypassed)
-- `rules/discovery-interview-protocol.md` — if `/sc:do` routes to `/sc:launch`, interview still runs
+- `rules/discovery-interview-protocol.md` — if `/solomon-agent:do` routes to `/solomon-agent:launch`, interview still runs
 
 ## Cost
 

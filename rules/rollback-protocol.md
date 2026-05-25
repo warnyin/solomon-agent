@@ -2,7 +2,7 @@
 
 > Round 5 Gap #46.
 
-## /sc:replay <PHASE>
+## /solomon-agent:replay <PHASE>
 1. Mark artifacts where `produced_at > <phase_start_ts>` as `status:superseded`
 2. Move to `state/archive/superseded-by-replay-<ts>/`
 3. Reset `state/project.json:phase = <PHASE>`

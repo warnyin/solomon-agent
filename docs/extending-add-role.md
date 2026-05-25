@@ -11,7 +11,7 @@ Add a NEW role when:
 
 DON'T add a role when:
 - The work is a small extension of an existing role's scope — extend charter instead
-- It's a one-off task — handle via `/sc:inject` instead
+- It's a one-off task — handle via `/solomon-agent:inject` instead
 - It overlaps significantly with an existing role — clarify boundaries first
 
 ## 7-step recipe

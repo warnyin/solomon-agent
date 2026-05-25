@@ -13,7 +13,7 @@
 ## Extender Cookbooks (Round 20)
 Before adding code, follow the cookbook:
 - [Add a role agent](docs/extending-add-role.md) — 7-step recipe
-- [Add a `/sc:*` command](docs/extending-add-command.md) — 5-step recipe
+- [Add a `/solomon-agent:*` command](docs/extending-add-command.md) — 5-step recipe
 - [Add a skill](docs/extending-add-skill.md) — 4-step recipe
 
 ## Setup

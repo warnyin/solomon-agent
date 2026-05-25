@@ -31,7 +31,7 @@ This file is the **template scaffold** the builder fills. See `rules/knowledge-b
 | {auto} | {auto} | {auto} | {auto} | {auto} |
 
 ## Search
-Use `/sc:kb <query>`.
+Use `/solomon-agent:kb <query>`.
 
 ---
 

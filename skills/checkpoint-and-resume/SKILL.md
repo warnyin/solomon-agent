@@ -1,5 +1,5 @@
 ---
-description: How owner-ceo writes frequent recoverable checkpoints + broadcasts role state so any operator can resume mid-flight after session drop. Includes the trigger matrix, role discipline ("am I active?"), and the 6-step resume procedure used by /sc:resume. Bound by rules/handoff-checkpoint-protocol.md.
+description: How owner-ceo writes frequent recoverable checkpoints + broadcasts role state so any operator can resume mid-flight after session drop. Includes the trigger matrix, role discipline ("am I active?"), and the 6-step resume procedure used by /solomon-agent:resume. Bound by rules/handoff-checkpoint-protocol.md.
 ---
 
 # Skill: checkpoint-and-resume
@@ -10,7 +10,7 @@ description: How owner-ceo writes frequent recoverable checkpoints + broadcasts 
 
 - Owner-ceo at every checkpoint trigger (see `rules/handoff-checkpoint-protocol.md §Checkpoint Triggers`)
 - Every role at start of its turn (read board, check active_role)
-- `/sc:resume` command on user-driven resumption
+- `/solomon-agent:resume` command on user-driven resumption
 
 ## Two responsibilities, one skill
 
@@ -43,7 +43,7 @@ Every role agent's first action:
 
 This prevents role-tech-lead from starting work while role-sa is still drafting, even if owner mis-dispatched.
 
-## Resume procedure (6 steps, used by `/sc:resume`)
+## Resume procedure (6 steps, used by `/solomon-agent:resume`)
 
 ```
 Step 1: Read state/role-state-board.json
@@ -90,9 +90,9 @@ Owner-ceo MAY downsample Layer 1 if `sc.config.json:checkpoint.skip_role_return=
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `/sc:resume` re-dispatches role that already completed | checkpoint missing completed_at | Re-run with `--force-recheck` to re-scan artifacts; report to issue tracker |
+| `/solomon-agent:resume` re-dispatches role that already completed | checkpoint missing completed_at | Re-run with `--force-recheck` to re-scan artifacts; report to issue tracker |
 | Two roles "active" simultaneously | board write not atomic | Update `scripts/checkpoint.mjs` to use atomic-rename pattern; verify-log will catch divergence |
-| Role refuses dispatch claiming "not active" | board stale | `/sc:status` to refresh board; if persists, owner-ceo restarts dispatch loop |
+| Role refuses dispatch claiming "not active" | board stale | `/solomon-agent:status` to refresh board; if persists, owner-ceo restarts dispatch loop |
 | Checkpoint write fails mid-feature | disk full / permissions | guard-checkpoint pre-hook should catch; in v0.1 owner falls back to in-memory + escalates SAFETY |
 | Resume from older checkpoint loses recent work | user invoked `--from <older-id>` | document in command help; default is always latest |
 
@@ -116,5 +116,5 @@ Owner-ceo MAY downsample Layer 1 if `sc.config.json:checkpoint.skip_role_return=
 - "I'll checkpoint at end of phase" — too coarse; mid-phase drops lose progress
 - "Just keep going if board is stale" — never; refuse + force refresh
 - "Skip codemap rebuild on feature_complete" — operator depends on it being fresh
-- "Resume by re-running /sc:launch" — wipes prior state; always `/sc:resume`
+- "Resume by re-running /solomon-agent:launch" — wipes prior state; always `/solomon-agent:resume`
 - Roles writing to `role-state-board.json` — only owner-ceo writes; race condition guaranteed otherwise

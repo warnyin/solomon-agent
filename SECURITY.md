@@ -55,7 +55,7 @@ Or use GitHub's private security advisory:
 ## Hardening Recommendations for Operators
 
 - Pin plugin version in marketplace config; review before upgrade
-- Run `/sc:doctor` before every `/sc:launch`
+- Run `/solomon-agent:doctor` before every `/solomon-agent:launch`
 - Don't commit `state/session.key` to git (already in `.gitignore`)
 - Set `sc.config.json:strictness.skip_adversarial: false` (default) for safety-class work
 - Limit ECC + MCP allow-list per role via `state/role-acls.json` to least-privilege

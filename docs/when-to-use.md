@@ -7,14 +7,14 @@
 | Project Size ↓ / Team Size → | Solo | 2-5 | 6+ |
 |---|---|---|---|
 | XS (1-3 files) | by hand | by hand | by hand |
-| S (10-50 files) | sc-launch | by hand | by hand |
-| M (50-200 files) | sc-launch | sc-launch | by hand |
-| L (200+ files) | sc-launch (split) | sc-launch | dedicated PM tool |
+| S (10-50 files) | /solomon-agent:launch | by hand | by hand |
+| M (50-200 files) | /solomon-agent:launch | /solomon-agent:launch | by hand |
+| L (200+ files) | /solomon-agent:launch (split) | /solomon-agent:launch | dedicated PM tool |
 
 ## Rules of Thumb
-1. Use sc-launch when goal fits 1-2 sentences AND you don't want to project-manage
+1. Use `/solomon-agent:launch` when goal fits 1-2 sentences AND you don't want to project-manage
 2. Skip when you already have a clear PM ticket — write the ticket
-3. Choose sc over alternatives when you want explicit escalation gates
+3. Choose Solomon Agent over alternatives when you want explicit escalation gates
 
 ## Good fit ✅
 - "Build a CLI to convert markdown → PDF with themes"

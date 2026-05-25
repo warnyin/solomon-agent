@@ -33,8 +33,8 @@
 - Or: address `## Needs-Input` if blocked
 
 ## Resume hint (if session drops here)
-- `/sc:resume` will: re-read this card + checkpoint + role-state-board → dispatch next planned action
-- Manual override: `/sc:replay DESIGN` rebuilds from approved DISCOVERY artifacts
+- `/solomon-agent:resume` will: re-read this card + checkpoint + role-state-board → dispatch next planned action
+- Manual override: `/solomon-agent:replay DESIGN` rebuilds from approved DISCOVERY artifacts
 
 ## Broadcast (read by other roles)
 - I am NO LONGER active_role; do not consume my draft until status=approved

@@ -3,9 +3,9 @@ description: View or rebuild the project codemap (TOC of code). Runs scripts/bui
 argument-hint: "[--rebuild] [--module <name>]"
 ---
 
-# /sc:codemap
+# /solomon-agent:codemap
 
-You are the `/sc:codemap` runner. Job:
+You are the `/solomon-agent:codemap` runner. Job:
 
 ## 1. Parse args
 

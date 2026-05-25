@@ -20,10 +20,10 @@
 
 ## ✨ TL;DR
 
-You type **one slash command**. Solomon Agent summons a virtual company of **10 specialist AI agents** — PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, Service Desk — coordinated by a **CEO orchestrator** that runs the full **DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF** lifecycle autonomously. Sign-off gates at every step. Resumable from any session drop. Auto-built knowledge base + code map. Natural-language router via `/sc:do`.
+You type **one slash command**. Solomon Agent summons a virtual company of **10 specialist AI agents** — PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, Service Desk — coordinated by a **CEO orchestrator** that runs the full **DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF** lifecycle autonomously. Sign-off gates at every step. Resumable from any session drop. Auto-built knowledge base + code map. Natural-language router via `/solomon-agent:do`.
 
 ```
-/sc:launch "build a SaaS appointment app for Thai barbershops"
+/solomon-agent:launch "build a SaaS appointment app for Thai barbershops"
 ```
 
 That's it. The council convenes. You get back a working deliverable, a knowledge base of every decision, and a runbook to operate it.
@@ -40,10 +40,10 @@ That's it. The council convenes. You get back a working deliverable, a knowledge
 2. **Decomposes work to 10 specialist roles** with clear charters and strict anti-scope
 3. **Enforces sign-off gates** at every step (self → peer → owner → adversarial for safety-class)
 4. **Demands creative + security mindset** (≥ 3 alternatives + STRIDE-on-everything per artifact)
-5. **Checkpoints continuously** so any operator can resume mid-flight via `/sc:resume`
+5. **Checkpoints continuously** so any operator can resume mid-flight via `/solomon-agent:resume`
 6. **Auto-builds the knowledge base + code map** so context never decays
 7. **Surfaces cost transparently** — pre-flight estimate, mid-flight alerts, post-flight retrospective
-8. **Routes natural-language intent** via `/sc:do` so you never memorize commands
+8. **Routes natural-language intent** via `/solomon-agent:do` so you never memorize commands
 
 Born from 20 rounds of audit (110 closed gaps + 5 strategic gaps) — battle-spec'd, not vibe-coded.
 
@@ -57,12 +57,12 @@ Born from 20 rounds of audit (110 closed gaps + 5 strategic gaps) — battle-spe
 | 🏛️ | **10-Role Virtual Company** | PM / BA / SA / Tech Lead / Developer / QA / DevSecOps / Security / Infra / Service Desk — each with charter, anti-scope, and verification checklist |
 | ✅ | **Sign-Off Gates** | Every artifact: self-verify → peer review → owner phase-exit; safety-class artifacts get adversarial review too. Nothing ships unverified |
 | 🧠 | **Creative + Security Mindset** | Rule of 3 (≥ 3 alternatives) + STRIDE-on-everything + assume-hostile-input + fail-closed + least-privilege + no-secrets-in-text |
-| 💾 | **Resumable Checkpoints** | 6 triggers — role return / phase exit / feature complete / escalation / interview round / 15-min heartbeat. `/sc:resume` continues from latest |
-| 📚 | **Auto Knowledge Base** | Every artifact indexed in `docs/kb/` by phase / role / type / feature + decisions / risks / glossary + full-text search via `/sc:kb <query>` |
+| 💾 | **Resumable Checkpoints** | 6 triggers — role return / phase exit / feature complete / escalation / interview round / 15-min heartbeat. `/solomon-agent:resume` continues from latest |
+| 📚 | **Auto Knowledge Base** | Every artifact indexed in `docs/kb/` by phase / role / type / feature + decisions / risks / glossary + full-text search via `/solomon-agent:kb <query>` |
 | 🗺️ | **Auto Codemap** | `docs/codemap/` rebuilt on every feature complete — modules, entry points, dependencies, public APIs across 8+ languages |
 | 💰 | **Cost Transparency** | Pre-flight estimate (band: low—mid—high) → mid-flight burn alerts (50/80/95%) → per-feature retrospective with calibration |
-| 🎯 | **Meta-Command Router** | `/sc:do "anything in Thai or English"` — reads state, classifies intent, asks back if ambiguous, routes to the right command. One command to rule them all |
-| 🩺 | **Health Check** | `/sc:doctor` runs 15 checks (node version, manifests, scripts, hook schema, HMAC chain, role coverage, KB freshness) — pre-flight before launch |
+| 🎯 | **Meta-Command Router** | `/solomon-agent:do "anything in Thai or English"` — reads state, classifies intent, asks back if ambiguous, routes to the right command. One command to rule them all |
+| 🩺 | **Health Check** | `/solomon-agent:doctor` runs 15 checks (node version, manifests, scripts, hook schema, HMAC chain, role coverage, KB freshness) — pre-flight before launch |
 | 🔒 | **Defense in Depth** | HMAC chain on event log + atomic-rename writes + path-traversal guards + secret-pattern hooks + per-role ACLs |
 | 🌏 | **Bilingual UX** | All escalation prompts + interview questions + meta-router keywords work in Thai AND English |
 
@@ -73,7 +73,7 @@ Born from 20 rounds of audit (110 closed gaps + 5 strategic gaps) — battle-spe
 ```mermaid
 flowchart TB
     User([👤 You])
-    User -- "/sc:launch &quot;build X&quot;" --> Owner
+    User -- "/solomon-agent:launch &quot;build X&quot;" --> Owner
 
     subgraph Owner["👑 owner-ceo (CEO orchestrator)"]
         DI[Discovery Interview<br/>5 rounds × 5 questions]
@@ -121,7 +121,7 @@ flowchart TB
     Outputs --> User
 
     Owner -.->|escalate when needed| User
-    Owner -.->|/sc:resume continues here| CHK
+    Owner -.->|/solomon-agent:resume continues here| CHK
 ```
 
 ### Lifecycle (5 core phases + project-type variations)
@@ -164,7 +164,7 @@ DISCOVERY ──→ DESIGN ──→ BUILD ──→ VERIFY ──→ HANDOFF
 | **role-service-desk** | ⚪ white | haiku | Runbook, support docs, incident playbook, exec summary | Technical content production |
 | | | | | |
 | **owner-ceo** | 🟣 magenta | opus | Decompose / dispatch / collect / decide / escalate — orchestrator only | Doing role work itself |
-| **backup-owner** | 🩷 pink | opus | User-triggered failover only (`/sc:failover`) | Automatic heartbeat (v0.1 limit) |
+| **backup-owner** | 🩷 pink | opus | User-triggered failover only (`/solomon-agent:failover`) | Automatic heartbeat (v0.1 limit) |
 
 Full charters: [`rules/role-charters.md`](rules/role-charters.md) · [`docs/roles.md`](docs/roles.md)
 
@@ -187,7 +187,7 @@ Full charters: [`rules/role-charters.md`](rules/role-charters.md) · [`docs/role
 ### Verify install
 
 ```
-/sc:doctor
+/solomon-agent:doctor
 ```
 
 You should see 14-15 checks pass. If anything fails, see [Troubleshooting](#-troubleshooting).
@@ -199,8 +199,8 @@ You should see 14-15 checks pass. If anything fails, see [Troubleshooting](#-tro
 ### Your first project (3 commands)
 
 ```
-/sc:doctor                                  # Pre-flight: confirm install OK
-/sc:launch "build a markdown-to-PDF CLI"    # Discovery Interview starts
+/solomon-agent:doctor                                  # Pre-flight: confirm install OK
+/solomon-agent:launch "build a markdown-to-PDF CLI"    # Discovery Interview starts
 # … answer 3-5 questions per round, type "ลุย" or "go" to skip remaining
 # … cost estimate shown → confirm with y/n/budget=<usd>
 # … 10 roles work in parallel, signing off as they go
@@ -210,11 +210,11 @@ You should see 14-15 checks pass. If anything fails, see [Troubleshooting](#-tro
 ### Don't want to remember 14 commands? Use one
 
 ```
-/sc:do ดู status ปัจจุบัน              → routes to /sc:status
-/sc:do ต่อจากที่หยุด                   → /sc:resume
-/sc:do หา design เรื่อง auth          → /sc:kb auth
-/sc:do owner ค้างมา 10 นาที            → /sc:failover
-/sc:do build a Slack bot              → /sc:launch (with Discovery Interview)
+/solomon-agent:do ดู status ปัจจุบัน              → routes to /solomon-agent:status
+/solomon-agent:do ต่อจากที่หยุด                   → /solomon-agent:resume
+/solomon-agent:do หา design เรื่อง auth          → /solomon-agent:kb auth
+/solomon-agent:do owner ค้างมา 10 นาที            → /solomon-agent:failover
+/solomon-agent:do build a Slack bot              → /solomon-agent:launch (with Discovery Interview)
 ```
 
 ---
@@ -223,38 +223,38 @@ You should see 14-15 checks pass. If anything fails, see [Troubleshooting](#-tro
 
 ### 🎯 Meta — one to rule them all
 ```bash
-/sc:do "<anything in plain language>"   # Smart router: reads state, classifies intent,
+/solomon-agent:do "<anything in plain language>"   # Smart router: reads state, classifies intent,
                                         # asks back if ambiguous, routes to the right command.
                                         # Skip-remember mode for casual operators.
 ```
 
 ### 🩺 Health
 ```bash
-/sc:doctor [--verbose] [--fix]          # 15-check plugin + project health check
+/solomon-agent:doctor [--verbose] [--fix]          # 15-check plugin + project health check
 ```
 
 ### 🚀 Project Lifecycle
 ```bash
-/sc:launch "<one-line goal>"            # Launch new project (Discovery Interview + cost pre-flight)
-/sc:status                              # Live phase + active role + recent events
-/sc:inject "<context/decision>"         # Push info to running orchestrator
-/sc:abort                               # Graceful stop (state preserved for /sc:resume)
-/sc:replay <PHASE>                      # Re-run a phase with new context
-/sc:resume                              # Continue from latest checkpoint (after session drop)
-/sc:failover                            # Swap to backup-owner (user-triggered)
+/solomon-agent:launch "<one-line goal>"            # Launch new project (Discovery Interview + cost pre-flight)
+/solomon-agent:status                              # Live phase + active role + recent events
+/solomon-agent:inject "<context/decision>"         # Push info to running orchestrator
+/solomon-agent:abort                               # Graceful stop (state preserved for /solomon-agent:resume)
+/solomon-agent:replay <PHASE>                      # Re-run a phase with new context
+/solomon-agent:resume                              # Continue from latest checkpoint (after session drop)
+/solomon-agent:failover                            # Swap to backup-owner (user-triggered)
 ```
 
 ### 📊 Observability
 ```bash
-/sc:cost-report                         # Per-role token/cost breakdown + retrospective
-/sc:stats                               # Cross-project success metrics
-/sc:compact                             # Archive old artifacts + logs
+/solomon-agent:cost-report                         # Per-role token/cost breakdown + retrospective
+/solomon-agent:stats                               # Cross-project success metrics
+/solomon-agent:compact                             # Archive old artifacts + logs
 ```
 
 ### 📚 Knowledge Navigation
 ```bash
-/sc:codemap [--rebuild] [--module X]    # View/rebuild code TOC (docs/codemap/)
-/sc:kb [<query>] [--by-phase|role|type] # Browse/search artifact KB (docs/kb/)
+/solomon-agent:codemap [--rebuild] [--module X]    # View/rebuild code TOC (docs/codemap/)
+/solomon-agent:kb [<query>] [--by-phase|role|type] # Browse/search artifact KB (docs/kb/)
 ```
 
 Full command specs: [`commands/`](commands/)
@@ -313,7 +313,7 @@ Full schema: [`docs/configuration.md`](docs/configuration.md)
 
 ## 💡 Worked Example
 
-User: `/sc:launch "build a Markdown-to-PDF CLI in Node.js"`
+User: `/solomon-agent:launch "build a Markdown-to-PDF CLI in Node.js"`
 
 ```
 [$] PRE-FLIGHT COST ESTIMATE
@@ -376,7 +376,7 @@ Three surfaces (per [`rules/cost-transparency-protocol.md`](rules/cost-transpare
 
 | Surface | When | What it shows |
 |---|---|---|
-| **Pre-flight** | Before `/sc:launch` dispatches owner | Expected tokens + USD with low—mid—high bands · 80% confidence · based on heuristic-v1 + memory MCP samples |
+| **Pre-flight** | Before `/solomon-agent:launch` dispatches owner | Expected tokens + USD with low—mid—high bands · 80% confidence · based on heuristic-v1 + memory MCP samples |
 | **Mid-flight** | Every checkpoint trigger | `[$] BURN — N% used · X k tok/min · projected $Y` + threshold alerts (50/80/95%) + 3× spike detector |
 | **Retrospective** | At HANDOFF | Per-feature + per-role breakdown · estimate vs actual · calibration update to memory MCP |
 
@@ -424,7 +424,7 @@ Per [`rules/handoff-checkpoint-protocol.md`](rules/handoff-checkpoint-protocol.m
 
 Resume after session drop:
 ```
-/sc:resume
+/solomon-agent:resume
 ```
 
 Idempotent — safe to invoke repeatedly. Every role reads `state/role-state-board.json` and refuses dispatch unless it's their turn (no premature work).
@@ -446,7 +446,7 @@ docs/kb/
 ├── decisions.md   (every ADR + waiver extracted)
 ├── risks.md       (every Open/Accepted risk)
 ├── glossary.md    (merged from role-ba domain-models)
-└── search-index.json  (substring search via /sc:kb <query>)
+└── search-index.json  (substring search via /solomon-agent:kb <query>)
 ```
 
 ### `docs/codemap/` — Code TOC
@@ -493,11 +493,11 @@ Per [`rules/escalation.md`](rules/escalation.md). Owner halts and asks YOU only 
 |---|---|
 | `/plugin` command not found | Update Claude Code (`npm install -g @anthropic-ai/claude-code`) |
 | `marketplace add` says "not found" | Repo must be **public** on GitHub; check URL + spelling |
-| `/sc:doctor` reports `hmac_chain: fail` | Don't auto-fix — investigate; possibly corruption — `/sc:abort` + restart |
-| Owner stuck > 10min | `/sc:failover` swaps to backup-owner |
-| Budget exceeded mid-flight | `/sc:status` → adjust `sc.config.json:budget` → `/sc:abort` + resume |
-| State too large | `/sc:compact` archives old artifacts |
-| Codemap looks stale | `/sc:doctor --fix` rebuilds it |
+| `/solomon-agent:doctor` reports `hmac_chain: fail` | Don't auto-fix — investigate; possibly corruption — `/solomon-agent:abort` + restart |
+| Owner stuck > 10min | `/solomon-agent:failover` swaps to backup-owner |
+| Budget exceeded mid-flight | `/solomon-agent:status` → adjust `sc.config.json:budget` → `/solomon-agent:abort` + resume |
+| State too large | `/solomon-agent:compact` archives old artifacts |
+| Codemap looks stale | `/solomon-agent:doctor --fix` rebuilds it |
 | Want to inspect events | `node scripts/verify-log.mjs` confirms HMAC chain integrity |
 | Uninstall completely | `node scripts/uninstall.mjs` then `/plugin uninstall solomon-agent` |
 
@@ -505,7 +505,7 @@ Per [`rules/escalation.md`](rules/escalation.md). Owner halts and asks YOU only 
 
 ## 🚧 v0.1 Limitations (be honest)
 
-- ❌ **No automatic owner liveness detection** — user invokes `/sc:failover` manually
+- ❌ **No automatic owner liveness detection** — user invokes `/solomon-agent:failover` manually
 - ❌ **Determinism = structural only**, not prose-level reproducibility
 - ❌ **Budget tracking may degrade to char-heuristic** if Claude Code Agent tool doesn't surface child usage
 - ❌ **Write-path enforcement = best-effort**, not adversarial (LLM has FS access)
@@ -524,9 +524,9 @@ Full audit: [`docs/architecture.md#v01-limitations`](docs/architecture.md)
 ### v0.2 (next minor)
 - Automatic owner heartbeat (when/if Claude Code adds supervisor API)
 - Real concurrency for parallel BUILD via worktrees (proven, not just specified)
-- `/sc:undo` last-action revert + `/sc:diff` artifact comparison
-- `/sc:export` project bundling for non-sc operators
-- `/sc:lessons` query memory MCP Lesson entities
+- `/solomon-agent:undo` last-action revert + `/solomon-agent:diff` artifact comparison
+- `/solomon-agent:export` project bundling for non-sc operators
+- `/solomon-agent:lessons` query memory MCP Lesson entities
 - Memory MCP pruning + cross-project dedup
 - i18n beyond TH+EN (JA, ZH, ES, FR, DE — community PRs welcome)
 
@@ -545,7 +545,7 @@ PRs welcome! Start with [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Adding things:
 - 🧑 [Add a role agent](docs/extending-add-role.md) — 7-step cookbook
-- ⚡ [Add a `/sc:*` command](docs/extending-add-command.md) — 5-step cookbook
+- ⚡ [Add a `/solomon-agent:*` command](docs/extending-add-command.md) — 5-step cookbook
 - 🧠 [Add a cognitive skill](docs/extending-add-skill.md) — 4-step cookbook
 
 Code of Conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
@@ -623,10 +623,10 @@ Copyright © 2026 ArmLazySong
 
 ## ✨ สรุปสั้น
 
-พิมพ์ **slash command เดียว** Solomon Agent จะเรียก **AI specialist 10 ตัว** มาทำงานเป็น virtual company — PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, Service Desk — มี **CEO orchestrator** คุมให้รัน lifecycle เต็มรอบ **DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF** อย่างอัตโนมัติ มี sign-off gate ทุกขั้น, resume ได้หลัง session หลุด, สร้าง knowledge base + code map ให้อัตโนมัติ, มี natural-language router `/sc:do`
+พิมพ์ **slash command เดียว** Solomon Agent จะเรียก **AI specialist 10 ตัว** มาทำงานเป็น virtual company — PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, Service Desk — มี **CEO orchestrator** คุมให้รัน lifecycle เต็มรอบ **DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF** อย่างอัตโนมัติ มี sign-off gate ทุกขั้น, resume ได้หลัง session หลุด, สร้าง knowledge base + code map ให้อัตโนมัติ, มี natural-language router `/solomon-agent:do`
 
 ```
-/sc:launch "ทำ SaaS จองคิวร้านตัดผมไทย"
+/solomon-agent:launch "ทำ SaaS จองคิวร้านตัดผมไทย"
 ```
 
 แค่นี้ — สภาประชุม คืนผลลัพธ์เป็น deliverable ใช้งานได้จริง พร้อม KB ของทุกการตัดสินใจ + runbook สำหรับ operate
@@ -643,10 +643,10 @@ Copyright © 2026 ArmLazySong
 2. **แบ่งงานเป็น 10 specialist roles** มี charter + anti-scope ชัด
 3. **บังคับ sign-off gates** ทุกขั้น (self → peer → owner → adversarial สำหรับ safety-class)
 4. **ต้อง creative + security mindset** (≥ 3 ทางเลือก + STRIDE-on-everything)
-5. **Checkpoint บ่อย** — `/sc:resume` ต่อจากจุดที่หยุด
+5. **Checkpoint บ่อย** — `/solomon-agent:resume` ต่อจากจุดที่หยุด
 6. **Auto-build KB + codemap** — context ไม่หาย
 7. **โปร่งใสเรื่อง cost** — pre-flight estimate, mid-flight alerts, retrospective
-8. **Route natural-language** ผ่าน `/sc:do` — ไม่ต้องจำ command
+8. **Route natural-language** ผ่าน `/solomon-agent:do` — ไม่ต้องจำ command
 
 ผ่าน 20 รอบของ audit (110 closed gaps + 5 strategic gaps) — spec-driven ไม่ใช่ vibe-coded
 
@@ -660,12 +660,12 @@ Copyright © 2026 ArmLazySong
 | 🏛️ | **10-Role Virtual Company** | PM / BA / SA / Tech Lead / Developer / QA / DevSecOps / Security / Infra / Service Desk |
 | ✅ | **Sign-Off Gates** | ทุก artifact: self → peer → owner; safety-class +adversarial. ไม่มีอะไรผ่านโดยไม่ตรวจ |
 | 🧠 | **Creative + Security Mindset** | Rule of 3 + STRIDE + assume-hostile-input + fail-closed + least-privilege + no-secrets-in-text |
-| 💾 | **Resumable Checkpoints** | 6 triggers; `/sc:resume` ต่อจาก checkpoint ล่าสุด |
-| 📚 | **Auto Knowledge Base** | ทุก artifact index ใน `docs/kb/` by-phase/role/type/feature + decisions/risks/glossary + ค้น via `/sc:kb <query>` |
+| 💾 | **Resumable Checkpoints** | 6 triggers; `/solomon-agent:resume` ต่อจาก checkpoint ล่าสุด |
+| 📚 | **Auto Knowledge Base** | ทุก artifact index ใน `docs/kb/` by-phase/role/type/feature + decisions/risks/glossary + ค้น via `/solomon-agent:kb <query>` |
 | 🗺️ | **Auto Codemap** | `docs/codemap/` rebuild ทุก feature complete — รองรับ 8+ ภาษา |
 | 💰 | **Cost Transparency** | Pre-flight (band low—mid—high) → mid-flight alerts (50/80/95%) → retrospective + calibration |
-| 🎯 | **Meta-Command Router** | `/sc:do "พิมพ์อะไรก็ได้"` — อ่าน state, classify intent, ถามกลับถ้าไม่แน่ใจ |
-| 🩺 | **Health Check** | `/sc:doctor` ตรวจ 15 ข้อ — manifests, scripts, hooks, HMAC, KB freshness |
+| 🎯 | **Meta-Command Router** | `/solomon-agent:do "พิมพ์อะไรก็ได้"` — อ่าน state, classify intent, ถามกลับถ้าไม่แน่ใจ |
+| 🩺 | **Health Check** | `/solomon-agent:doctor` ตรวจ 15 ข้อ — manifests, scripts, hooks, HMAC, KB freshness |
 | 🔒 | **Defense in Depth** | HMAC chain + atomic-rename + path-traversal guards + secret-pattern hooks + per-role ACLs |
 | 🌏 | **2 ภาษา** | Escalation + Interview + Meta-router keyword ใช้ได้ทั้ง ไทย และ อังกฤษ |
 
@@ -687,7 +687,7 @@ Copyright © 2026 ArmLazySong
 ### ตรวจสอบ
 
 ```
-/sc:doctor
+/solomon-agent:doctor
 ```
 
 ต้องเห็น 14-15 checks ผ่าน
@@ -697,8 +697,8 @@ Copyright © 2026 ArmLazySong
 ## ⚡ เริ่มใช้งาน
 
 ```
-/sc:doctor                                    # ตรวจ install
-/sc:launch "ทำ CLI แปลง markdown เป็น PDF"   # Discovery Interview เริ่ม
+/solomon-agent:doctor                                    # ตรวจ install
+/solomon-agent:launch "ทำ CLI แปลง markdown เป็น PDF"   # Discovery Interview เริ่ม
 # ตอบ 3-5 คำถามต่อรอบ พิมพ์ "ลุย" เพื่อข้าม
 # Cost estimate แสดง → confirm y/n/budget=<usd>
 # 10 roles ทำงานขนาน sign-off ทุกขั้น
@@ -708,11 +708,11 @@ Copyright © 2026 ArmLazySong
 ### ขี้เกียจจำ command? ใช้ตัวเดียว
 
 ```
-/sc:do ดู status ปัจจุบัน              → /sc:status
-/sc:do ต่อจากที่หยุด                   → /sc:resume
-/sc:do หา design เรื่อง auth          → /sc:kb auth
-/sc:do owner ค้างมา 10 นาที            → /sc:failover
-/sc:do ทำ Slack bot                  → /sc:launch (พร้อม Discovery Interview)
+/solomon-agent:do ดู status ปัจจุบัน              → /solomon-agent:status
+/solomon-agent:do ต่อจากที่หยุด                   → /solomon-agent:resume
+/solomon-agent:do หา design เรื่อง auth          → /solomon-agent:kb auth
+/solomon-agent:do owner ค้างมา 10 นาที            → /solomon-agent:failover
+/solomon-agent:do ทำ Slack bot                  → /solomon-agent:launch (พร้อม Discovery Interview)
 ```
 
 ---
@@ -720,28 +720,28 @@ Copyright © 2026 ArmLazySong
 ## 🛠️ Commands (14 ตัว)
 
 ### 🎯 Meta
-- `/sc:do "<พิมพ์อะไรก็ได้>"` — router ตัวเดียวรู้ทุกอย่าง
+- `/solomon-agent:do "<พิมพ์อะไรก็ได้>"` — router ตัวเดียวรู้ทุกอย่าง
 
 ### 🩺 Health
-- `/sc:doctor [--verbose] [--fix]` — 15-check health
+- `/solomon-agent:doctor [--verbose] [--fix]` — 15-check health
 
 ### 🚀 Lifecycle
-- `/sc:launch "<goal>"` — เริ่ม project (Discovery Interview + cost pre-flight)
-- `/sc:status` — phase + active role + events ล่าสุด
-- `/sc:inject "<context>"` — ส่งข้อมูลเพิ่มเข้า orchestrator
-- `/sc:abort` — หยุดอย่างนุ่มนวล (state ยังอยู่)
-- `/sc:replay <PHASE>` — รัน phase ใหม่
-- `/sc:resume` — ต่อจาก checkpoint ล่าสุด
-- `/sc:failover` — swap ไป backup-owner
+- `/solomon-agent:launch "<goal>"` — เริ่ม project (Discovery Interview + cost pre-flight)
+- `/solomon-agent:status` — phase + active role + events ล่าสุด
+- `/solomon-agent:inject "<context>"` — ส่งข้อมูลเพิ่มเข้า orchestrator
+- `/solomon-agent:abort` — หยุดอย่างนุ่มนวล (state ยังอยู่)
+- `/solomon-agent:replay <PHASE>` — รัน phase ใหม่
+- `/solomon-agent:resume` — ต่อจาก checkpoint ล่าสุด
+- `/solomon-agent:failover` — swap ไป backup-owner
 
 ### 📊 Observability
-- `/sc:cost-report` — token/cost ต่อ role + retrospective
-- `/sc:stats` — metrics ข้าม project
-- `/sc:compact` — archive logs/artifacts เก่า
+- `/solomon-agent:cost-report` — token/cost ต่อ role + retrospective
+- `/solomon-agent:stats` — metrics ข้าม project
+- `/solomon-agent:compact` — archive logs/artifacts เก่า
 
 ### 📚 Knowledge
-- `/sc:codemap [--rebuild]` — view/rebuild code TOC
-- `/sc:kb [<query>]` — browse/search artifact KB
+- `/solomon-agent:codemap [--rebuild]` — view/rebuild code TOC
+- `/solomon-agent:kb [<query>]` — browse/search artifact KB
 
 ---
 
@@ -768,7 +768,7 @@ Schema เต็ม: [`docs/configuration.md`](docs/configuration.md)
 
 | จุด | เมื่อไหร่ | แสดงอะไร |
 |---|---|---|
-| **Pre-flight** | ก่อน `/sc:launch` | Expected tokens + USD band (low—mid—high) |
+| **Pre-flight** | ก่อน `/solomon-agent:launch` | Expected tokens + USD band (low—mid—high) |
 | **Mid-flight** | ทุก checkpoint | `[$] BURN — N% used · X k tok/min · projected $Y` + alerts |
 | **Retrospective** | ที่ HANDOFF | per-feature + per-role + estimate vs actual + calibration |
 
@@ -776,7 +776,7 @@ Schema เต็ม: [`docs/configuration.md`](docs/configuration.md)
 
 ## 🚧 ข้อจำกัด v0.1
 
-- ❌ ไม่มี automatic owner liveness — ต้อง `/sc:failover` เอง
+- ❌ ไม่มี automatic owner liveness — ต้อง `/solomon-agent:failover` เอง
 - ❌ Determinism = structural เท่านั้น
 - ❌ Budget tracking อาจเป็น char-heuristic
 - ❌ Write-path enforcement = best-effort
@@ -788,7 +788,7 @@ Schema เต็ม: [`docs/configuration.md`](docs/configuration.md)
 
 ## 🗺️ Roadmap
 
-**v0.2:** automatic owner heartbeat, real parallel BUILD, `/sc:undo`, `/sc:diff`, `/sc:export`, `/sc:lessons`, memory MCP pruning, i18n เพิ่มภาษา
+**v0.2:** automatic owner heartbeat, real parallel BUILD, `/solomon-agent:undo`, `/solomon-agent:diff`, `/solomon-agent:export`, `/solomon-agent:lessons`, memory MCP pruning, i18n เพิ่มภาษา
 
 **v0.3+:** cross-LLM portability, web dashboard, A/B prompt evolution, multi-project workspace
 
@@ -800,9 +800,9 @@ Schema เต็ม: [`docs/configuration.md`](docs/configuration.md)
 |---|---|
 | `/plugin` ไม่มี | `npm install -g @anthropic-ai/claude-code` |
 | `marketplace add` ไม่เจอ | Repo ต้อง public บน GitHub |
-| Owner ค้าง > 10 นาที | `/sc:failover` |
-| Budget เกิน | `/sc:status` → แก้ config → `/sc:abort` + resume |
-| State ใหญ่ | `/sc:compact` |
+| Owner ค้าง > 10 นาที | `/solomon-agent:failover` |
+| Budget เกิน | `/solomon-agent:status` → แก้ config → `/solomon-agent:abort` + resume |
+| State ใหญ่ | `/solomon-agent:compact` |
 | Uninstall | `node scripts/uninstall.mjs` แล้ว `/plugin uninstall solomon-agent` |
 
 ---
@@ -813,7 +813,7 @@ PR ยินดีต้อนรับ! เริ่มที่ [CONTRIBUTING.
 
 Cookbooks:
 - 🧑 [เพิ่ม role agent](docs/extending-add-role.md) — 7 ขั้นตอน
-- ⚡ [เพิ่ม `/sc:*` command](docs/extending-add-command.md) — 5 ขั้นตอน
+- ⚡ [เพิ่ม `/solomon-agent:*` command](docs/extending-add-command.md) — 5 ขั้นตอน
 - 🧠 [เพิ่ม cognitive skill](docs/extending-add-skill.md) — 4 ขั้นตอน
 
 [Code of Conduct](CODE_OF_CONDUCT.md) · [Security disclosure](SECURITY.md) · [Telemetry policy](docs/telemetry-policy.md) (zero by default)

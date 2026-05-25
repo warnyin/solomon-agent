@@ -95,5 +95,5 @@
 - **Special**: MUST NOT do role work itself; every domain decision delegates; has full Read ACL + Agent + TaskCreate/Update/List
 
 ## backup-owner — `color: pink`, `model: opus`
-- **Scope**: user-triggered failover only (via `/sc:failover`); reads `state/checkpoint.json` to resume
+- **Scope**: user-triggered failover only (via `/solomon-agent:failover`); reads `state/checkpoint.json` to resume
 - **No automatic heartbeat** (Round 6 #89: Claude Code has no agent supervisor)

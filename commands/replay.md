@@ -3,7 +3,7 @@ description: Re-run a specific phase. Resets state to phase start; later-phase a
 argument-hint: "<PHASE-NAME>"
 ---
 
-# /sc:replay
+# /solomon-agent:replay
 
 ## Procedure
 1. Validate `$ARGUMENTS` ∈ {DISCOVERY, DESIGN, BUILD, VERIFY, HANDOFF, REWORK, DEPLOY, DATA-MODEL, DESIGN-NATIVE}
@@ -30,6 +30,6 @@ Phase re-entered at clean state.
 ```
 
 ## Notes
-- Cannot replay HANDOFF (terminal) — use new `/sc:launch` instead
+- Cannot replay HANDOFF (terminal) — use new `/solomon-agent:launch` instead
 - Unresolved escalations remain in `state/project.json:pending_escalations[]`
 - Determinism: structural reproducibility only (Round 7 #95)

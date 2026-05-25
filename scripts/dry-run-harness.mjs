@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/dry-run-harness.mjs
-// Round 18: simulates /sc:launch end-to-end with mocked owner-ceo + role agents.
+// Round 18: simulates /solomon-agent:launch end-to-end with mocked owner-ceo + role agents.
 // CLI: node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/basic.json
 
 import fs from 'node:fs/promises';

@@ -52,7 +52,7 @@ async function buildExecSummary(project, artifacts, events) {
     `Artifacts: ${artifacts.length}`,
     `Pending escalations: ${pending}`,
     `Last activity: ${lastEvent?.ts || 'n/a'} (${lastEvent?.type || 'n/a'})`, ``,
-    pending > 0 ? `Next decision: see [YELLOW] ESCALATION block in /sc:status` : `Next decision: review Technical Detail section below`,
+    pending > 0 ? `Next decision: see [YELLOW] ESCALATION block in /solomon-agent:status` : `Next decision: review Technical Detail section below`,
     ``,
     `_(Auto-generated. Owner-ceo may re-dispatch role-service-desk at HANDOFF for richer prose.)_`,
   ].join('\n');
@@ -142,7 +142,7 @@ async function main() {
 
   try {
     const stat = await fs.stat('state/events.ndjson');
-    if (stat.size > 50 * 1024 * 1024) process.stderr.write(`[session-report] state/ is large — consider /sc:compact\n`);
+    if (stat.size > 50 * 1024 * 1024) process.stderr.write(`[session-report] state/ is large — consider /solomon-agent:compact\n`);
   } catch {}
 
   process.exit(0);

@@ -3,13 +3,13 @@ description: Show live status of running orchestrator — current phase, active 
 argument-hint: ""
 ---
 
-# /sc:status
+# /solomon-agent:status
 
 Read-only inspection of orchestrator state.
 
 ## Procedure
 
-1. Read `state/project.json` — if missing → "No active project. Run `/sc:launch \"<goal>\"`"
+1. Read `state/project.json` — if missing → "No active project. Run `/solomon-agent:launch \"<goal>\"`"
 2. Read `state/budget.json` — show tokens_used / tokens_budget + per-role breakdown
 3. Read tail of `state/events.ndjson` (last 10 events)
 4. Read `state/dispatch-stack.json` — list active dispatches (frame_key, role, depth, started_at)

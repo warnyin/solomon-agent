@@ -1,23 +1,23 @@
-# Cookbook — Add a New `/sc:*` Command
+# Cookbook — Add a New `/solomon-agent:*` Command
 
 > Round 20: extending the 14-command baseline with a new user-facing command.
 
 ## When to add
 
 - Specific user action recurring 3+ times that doesn't fit existing commands
-- Surface for a new internal capability (e.g. `/sc:export` for project bundling)
-- Distinct from `/sc:do` routing — only add when a typed entry-point is genuinely needed
+- Surface for a new internal capability (e.g. `/solomon-agent:export` for project bundling)
+- Distinct from `/solomon-agent:do` routing — only add when a typed entry-point is genuinely needed
 
 DON'T add when:
-- It's just an alias — extend `/sc:do` keyword table instead
-- It's a one-off — script + `/sc:doctor` callable instead
+- It's just an alias — extend `/solomon-agent:do` keyword table instead
+- It's a one-off — script + `/solomon-agent:doctor` callable instead
 - It overlaps existing command — extend that command's args/flags
 
 ## 5-step recipe
 
 ### Step 1 — Pick name + argument shape
 
-Name: `/sc:<slug>` (kebab-case, no underscores). Single verb preferred (e.g. `resume`, `doctor`, `export`).
+Name: `/solomon-agent:<slug>` (kebab-case, no underscores). Single verb preferred (e.g. `resume`, `doctor`, `export`).
 
 Argument hint format: `"<freeform>"` or `"--flag <value> [<positional>]"`. Test with users — short hints win.
 
@@ -31,9 +31,9 @@ description: <1-line — what it does + when to use>
 argument-hint: "<shape>"
 ---
 
-# /sc:<slug>
+# /solomon-agent:<slug>
 
-You are the `/sc:<slug>` runner. Job: <1 sentence>.
+You are the `/solomon-agent:<slug>` runner. Job: <1 sentence>.
 
 ## 1. Pre-flight
 - Required state checks (project.json, role-state-board, etc.)
@@ -61,7 +61,7 @@ If the command needs heavy logic, create `scripts/<slug>.mjs` (Node 18+ builtins
 - Graceful-crash via try/catch → `state/hook-errors.log` (NOT fail-closed unless security-class)
 - Emit events via shared `logEvent` helper
 
-### Step 4 — Wire into `/sc:do` router
+### Step 4 — Wire into `/solomon-agent:do` router
 
 Edit `commands/do.md` keyword routing table + `skills/intent-router/SKILL.md` keyword table. Add TH + EN keywords.
 
@@ -85,9 +85,9 @@ PR per `.github/PULL_REQUEST_TEMPLATE.md`. Include manual test plan exercising t
 
 ## Naming taboos
 
-- No `/sc:run`, `/sc:exec`, `/sc:eval` (security-charged; reserved)
+- No `/solomon-agent:run`, `/solomon-agent:exec`, `/solomon-agent:eval` (security-charged; reserved)
 - No collision with Claude Code built-ins (`/help`, `/clear`, `/compact`, `/goal`)
-- No vendor-specific names (`/sc:github`, `/sc:slack`) — those go under MCP-namespaced plugin
+- No vendor-specific names (`/solomon-agent:github`, `/solomon-agent:slack`) — those go under MCP-namespaced plugin
 
 ## Reference commands by complexity
 

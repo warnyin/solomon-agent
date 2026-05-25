@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added (Round 20 — Extender Cookbooks)
 - `docs/extending-add-role.md` — 7-step cookbook for adding a new role agent
-- `docs/extending-add-command.md` — 5-step cookbook for adding a `/sc:*` command
+- `docs/extending-add-command.md` — 5-step cookbook for adding a `/solomon-agent:*` command
 - `docs/extending-add-skill.md` — 4-step cookbook for adding a cognitive skill
 
 ### Added (Round 19 — Open-Source Readiness)
@@ -21,12 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CODE_OF_CONDUCT.md` — Contributor Covenant
 
 ### Added (Round 18 — Dry-Run Harness)
-- `scripts/dry-run-harness.mjs` — end-to-end simulation of `/sc:launch` with mock owner-ceo
+- `scripts/dry-run-harness.mjs` — end-to-end simulation of `/solomon-agent:launch` with mock owner-ceo
 - `tests/fixtures/launch-simulation/basic.json` — CLI-project scenario fixture
 - Updated `.github/workflows/eval.yml` — replaced stub with dry-run invocation
 
 ### Added (Round 17 — Health Check)
-- `commands/doctor.md` — `/sc:doctor` command spec (15 health checks)
+- `commands/doctor.md` — `/solomon-agent:doctor` command spec (15 health checks)
 - `scripts/doctor.mjs` — implementation with `--json`, `--verbose`, `--fix` modes
 
 ### Added (Round 16 — Cost Transparency)
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `commands/cost-report.md` — retrospective section
 - Updated `agents/owner-ceo.md` — burn-rate-watch invocation after every checkpoint
 
-### Added (Round 15 — Meta-Command `/sc:do`)
+### Added (Round 15 — Meta-Command `/solomon-agent:do`)
 - `commands/do.md` — smart router: reads state, classifies intent, asks back, routes
 - `skills/intent-router/SKILL.md` — 3-layer classification (state → keyword → confidence)
 

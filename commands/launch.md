@@ -3,9 +3,9 @@ description: Launch a virtual company of 10 role-based agents (CEO + PM/BA/SA/TL
 argument-hint: "<one-line requirement | path/to/requirement.md>"
 ---
 
-# /sc:launch
+# /solomon-agent:launch
 
-You are the `/sc:launch` command runner — a thin entrypoint, NOT the orchestrator. Your job:
+You are the `/solomon-agent:launch` command runner — a thin entrypoint, NOT the orchestrator. Your job:
 
 ## 1. Pre-flight (mandatory)
 
@@ -79,18 +79,18 @@ Begin DISCOVERY phase per your charter (agents/owner-ceo.md).
 
 ## 5. Do NOT do orchestration yourself
 
-This command body is delegation-only. All decomposition, role dispatch, conflict resolution, escalation handling, phase transitions, and final reporting belong to `owner-ceo`. Why: same logic must be reusable from `/sc:replay` and `/sc:inject`.
+This command body is delegation-only. All decomposition, role dispatch, conflict resolution, escalation handling, phase transitions, and final reporting belong to `owner-ceo`. Why: same logic must be reusable from `/solomon-agent:replay` and `/solomon-agent:inject`.
 
 ## 6. On owner return
 
 - **First turn ALWAYS opens with `[BLUE] DISCOVERY INTERVIEW`** — owner-ceo interviews the user to fill `state/artifacts/discovery-brief.md` (per `rules/discovery-interview-protocol.md`) BEFORE any role dispatch. User answers → next round → stops at confidence ≥ 0.85, user says "ลุย", or 5 rounds. To skip entirely: `sc.config.json:discovery_interview.skip = true` (not recommended).
 - If owner completed → final report at `state/artifacts/final-report.md`; show Executive Summary section
-- If owner escalated → escalation block already surfaced; user replies; owner-ceo can be re-invoked via `/sc:inject` or `/sc:replay`
-- If owner crashed → suggest `/sc:failover` (Round 6 Gap #89)
+- If owner escalated → escalation block already surfaced; user replies; owner-ceo can be re-invoked via `/solomon-agent:inject` or `/solomon-agent:replay`
+- If owner crashed → suggest `/solomon-agent:failover` (Round 6 Gap #89)
 
 ## v0.1 limits referenced
 
-- No automated owner liveness monitoring (user invokes `/sc:failover` manually)
+- No automated owner liveness monitoring (user invokes `/solomon-agent:failover` manually)
 - No determinism guarantee — only structural reproducibility (Round 7 Gap #95)
 - Budget tracking degrades to char-heuristic if Claude Code does not surface child token usage (Round 7 Gap #94)
 - Write-path enforcement is best-effort, not adversarial (Round 8 Gap #97)

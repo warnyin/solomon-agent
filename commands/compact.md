@@ -3,7 +3,7 @@ description: Archive old artifacts + rotate event log. Run when state/ grows lar
 argument-hint: ""
 ---
 
-# /sc:compact
+# /solomon-agent:compact
 
 ## Procedure
 Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/state-compact.mjs`:
@@ -15,8 +15,8 @@ Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/state-compact.mjs`:
 3. Print summary
 
 ## When to run
-- Stop hook warns if `state/` > 50MB → suggests `/sc:compact`
-- Before `/sc:abort` of large runs (cleaner archive)
+- Stop hook warns if `state/` > 50MB → suggests `/solomon-agent:compact`
+- Before `/solomon-agent:abort` of large runs (cleaner archive)
 - After HANDOFF — auto if `sc.config.json:auto_compact_handoff: true` (default)
 
 ## Notes

@@ -4,8 +4,8 @@
 
 ```mermaid
 sequenceDiagram
-    User->>/sc:launch: "build XYZ"
-    /sc:launch->>owner-ceo: Agent dispatch
+    User->>/solomon-agent:launch: "build XYZ"
+    /solomon-agent:launch->>owner-ceo: Agent dispatch
     owner-ceo->>role-pm: DISCOVERY parallel
     owner-ceo->>role-ba: DISCOVERY parallel
     role-pm-->>owner-ceo: prd artifact
@@ -57,7 +57,7 @@ docs/, tests/, .github/workflows/
 
 ## v0.1 Limitations (honest)
 
-- **No automatic owner liveness** — user invokes `/sc:failover` (Round 6 #89)
+- **No automatic owner liveness** — user invokes `/solomon-agent:failover` (Round 6 #89)
 - **Determinism = structural reproducibility** — Agent API has no seed/temp (Round 7 #95)
 - **Budget tracking degrades to char-heuristic** if no usage exposed (Round 7 #94)
 - **Write-path enforcement = best-effort** — LLM has FS access (Round 8 #97)

@@ -20,7 +20,7 @@ Owner-ceo MUST emit a checkpoint via `scripts/checkpoint.mjs` at EVERY trigger b
 | `escalation_emitted` | When `[YELLOW] ESCALATION` is surfaced | checkpoint with `resume_blocked_by: escalation_id` |
 | `interview_round_end` | After Discovery Interview each round | checkpoint with brief draft snapshot |
 | `time_threshold` | Every 15min wall-clock (heartbeat) | lightweight checkpoint with phase/role only |
-| `manual` | `/sc:status` or `/sc:resume` invocation | refresh broadcast + checkpoint |
+| `manual` | `/solomon-agent:status` or `/solomon-agent:resume` invocation | refresh broadcast + checkpoint |
 
 ## Checkpoint File Format
 
@@ -44,7 +44,7 @@ Owner-ceo MUST emit a checkpoint via `scripts/checkpoint.mjs` at EVERY trigger b
   ],
   "last_completed_dispatch": 7,
   "next_planned_action": "Await role-sa draft, then dispatch role-tech-lead with sa-architecture as input",
-  "resume_command_hint": "/sc:resume",
+  "resume_command_hint": "/solomon-agent:resume",
   "pending_escalations": [],
   "budget": {"tokens_used": 47230, "tokens_remaining": 152770, "usd_estimate": 0.42},
   "events_tail_50_offset": 1247,
@@ -88,7 +88,7 @@ Every role agent body must include this check at start of turn:
 
 This prevents two-roles-talking-at-once and prevents premature work even if owner-ceo accidentally over-dispatches.
 
-## Resume Procedure (used by `/sc:resume`)
+## Resume Procedure (used by `/solomon-agent:resume`)
 
 1. Read `state/role-state-board.json` → know phase + active_role + waiting_roles
 2. Read latest `state/checkpoints/*.json` → know next_planned_action + in_flight_artifacts
@@ -115,7 +115,7 @@ Defined as: a deliverable that passes VERIFY phase exit AND has `feature_id` tag
    - Codemap updated: docs/codemap/
    - KB updated: docs/kb/
    - Next: <next_feature or "HANDOFF">
-   - Resume anytime with /sc:resume
+   - Resume anytime with /solomon-agent:resume
    ```
 
 ## Atomicity & Recovery
@@ -160,5 +160,5 @@ For long-running phases, checkpoint cost is negligible vs the safety of recovera
 - `rules/handoff-protocol.md` — final HANDOFF includes pointer to checkpoint trail
 - `rules/role-strictness-protocol.md` — checkpoint after every sign-off transition
 - `rules/codemap-protocol.md` + `rules/knowledge-base-protocol.md` — feature_complete trigger rebuilds both
-- `commands/resume.md` — `/sc:resume` user entry point
-- `commands/status.md` — `/sc:status` reads latest checkpoint
+- `commands/resume.md` — `/solomon-agent:resume` user entry point
+- `commands/status.md` — `/solomon-agent:status` reads latest checkpoint

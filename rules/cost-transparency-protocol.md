@@ -1,6 +1,6 @@
 # Cost Transparency Protocol
 
-> Round 16 (post-Round 15 gap analysis): pre-flight estimate before /sc:launch + mid-flight burn alerts + per-feature retrospective. Stops "session ate $500 with no warning" surprises.
+> Round 16 (post-Round 15 gap analysis): pre-flight estimate before /solomon-agent:launch + mid-flight burn alerts + per-feature retrospective. Stops "session ate $500 with no warning" surprises.
 
 ## Why
 
@@ -8,7 +8,7 @@ Session this size (15 rounds of v0.1) cost real money. Without pre-flight, mid-f
 
 ## Three Surfaces
 
-### 1. Pre-flight estimate (before /sc:launch dispatches owner-ceo)
+### 1. Pre-flight estimate (before /solomon-agent:launch dispatches owner-ceo)
 
 `scripts/estimate-cost.mjs` runs and produces `state/cost-estimate.json`:
 
@@ -37,7 +37,7 @@ Session this size (15 rounds of v0.1) cost real money. Without pre-flight, mid-f
 
 If memory MCP has Pattern entities for similar projects, owner blends heuristic + historical (weight 0.5/0.5 if ≥ 3 samples, else heuristic only).
 
-**Surface to user (in `/sc:launch §1` pre-flight):**
+**Surface to user (in `/solomon-agent:launch §1` pre-flight):**
 ```
 [$] PRE-FLIGHT COST ESTIMATE
   Goal:       "build markdown-to-PDF CLI in Node.js"
@@ -142,6 +142,6 @@ Set any to `false` to disable. Defaults are all `true`. Logged as `Decision: cos
 ## v0.1 limits
 
 - Heuristic-v1 is hand-coded; no learning weights yet
-- Pre-flight assumes 1 feature per `/sc:launch` (multi-feature estimate = sum + 15% coordination overhead)
+- Pre-flight assumes 1 feature per `/solomon-agent:launch` (multi-feature estimate = sum + 15% coordination overhead)
 - USD conversion uses hardcoded $9/M-tokens average; real cost varies by model used (Opus vs Sonnet vs Haiku)
 - No per-MCP cost tracking

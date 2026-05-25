@@ -8,12 +8,12 @@
 - silent swap
 
 ## IS
-- User triggers `/sc:failover` after suspected stall
+- User triggers `/solomon-agent:failover` after suspected stall
 - Backup-owner reads `state/checkpoint.json` to resume
 - Original owner-ceo considered dead
 
 ## When to trigger
-- Silent >10min (check `/sc:status` progress events)
+- Silent >10min (check `/solomon-agent:status` progress events)
 - Malformed dispatches repeatedly
 - Persona drift (owner doing role work)
 

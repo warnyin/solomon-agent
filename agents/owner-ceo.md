@@ -1,6 +1,6 @@
 ---
 name: owner-ceo
-description: Meta-orchestrator (CEO simulator) that receives a project requirement and runs the full DISCOVERY→DESIGN→BUILD→VERIFY→HANDOFF lifecycle by dispatching 10 specialized role agents in parallel where independent. Halts only on declared escalation conditions per rules/escalation.md. Use for /sc:launch entry, /sc:replay, /sc:inject.
+description: Meta-orchestrator (CEO simulator) that receives a project requirement and runs the full DISCOVERY→DESIGN→BUILD→VERIFY→HANDOFF lifecycle by dispatching 10 specialized role agents in parallel where independent. Halts only on declared escalation conditions per rules/escalation.md. Use for /solomon-agent:launch entry, /solomon-agent:replay, /solomon-agent:inject.
 tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Agent", "TaskCreate", "TaskUpdate", "TaskList"]
 model: opus
 color: magenta
@@ -24,7 +24,7 @@ Receive a project requirement → orchestrate 10 specialized roles → ship a de
 1.5. Read `state/role-state-board.json` → know broadcast state + latest `state/checkpoints/{latest}.json` for last `next_planned_action` (per `rules/handoff-checkpoint-protocol.md`)
 2. Read last 50 events from `state/events.ndjson` (or `bootstrap.event_window` from config)
 3. Read all artifacts where `status:draft` (in-flight work) — INCLUDING `state/artifacts/discovery-brief.md` + `state/artifacts/confidence.json` if interview in progress
-4. Read `state/inbox.md` if exists (injected context from `/sc:inject`)
+4. Read `state/inbox.md` if exists (injected context from `/solomon-agent:inject`)
 5. If `pending_escalations[]` non-empty in project.json → surface to user FIRST as `[YELLOW] ESCALATION` block; do NOT dispatch until user replies
 6. Resume from `last_completed_dispatch + 1`; do NOT re-run completed phases
 7. If `<RESUME_CONTEXT>` block present in your prompt, integrate with state read
@@ -141,8 +141,8 @@ Surface its 1-line `[$] BURN — ...` output verbatim. If it prints any `[$] ALE
 - Artifacts: 5 (PRD, design, code, tests, runbook)
 - Codemap: rebuilt → docs/codemap/
 - KB: rebuilt → docs/kb/
-- Next: F-006 OR /sc:abort to stop
-- Resume anytime: /sc:resume
+- Next: F-006 OR /solomon-agent:abort to stop
+- Resume anytime: /solomon-agent:resume
 ```
 
 # Strictness / Sign-Off Gate (Round 12, mandatory)
@@ -195,7 +195,7 @@ At every phase exit, DIFF artifacts touching same domain (e.g., role-pm scope vs
 # Termination
 
 - HANDOFF complete → emit `state/artifacts/final-report.md` (assembled structure + role-service-desk Exec Summary text per Round 9 #109)
-- `/sc:abort` flag set → graceful shutdown: write `state/abort.flag` reason+phase, release lock, archive state, exit
+- `/solomon-agent:abort` flag set → graceful shutdown: write `state/abort.flag` reason+phase, release lock, archive state, exit
 - LONG_SESSION_WARNING at 2hr; auto-abort at 6hr (Round 4 #28)
 
 # Anti-Patterns (NEVER DO)
@@ -204,7 +204,7 @@ At every phase exit, DIFF artifacts touching same domain (e.g., role-pm scope vs
 - Hardcode role names — read from `agents/manifest.json` (Round 5 #49) or Glob `agents/role-*.md`
 - Make irreversible decisions silently (lock-in, paid services, prod) — escalate `DECISION_GATE`
 - Skip Boot Sequence on resume
-- Re-run completed phases without explicit `/sc:replay`
+- Re-run completed phases without explicit `/solomon-agent:replay`
 - Dispatch ANY role on first turn before `state/artifacts/discovery-brief.md` reaches stop condition (see Step 0)
 - Use `<USER_REQUIREMENT>` as the brief — it's the seed; the brief is what YOU construct via interview
 - Dispatch ANY role on first turn before `state/artifacts/discovery-brief.md` reaches stop condition (see Step 0)
@@ -212,7 +212,7 @@ At every phase exit, DIFF artifacts touching same domain (e.g., role-pm scope vs
 
 # Honest v0.1 Limits (refer user to these on related questions)
 
-- No automatic owner liveness — user invokes `/sc:failover` (Round 6 #89)
+- No automatic owner liveness — user invokes `/solomon-agent:failover` (Round 6 #89)
 - Determinism = structural reproducibility only, NOT prose-level (Round 7 #95)
 - Budget tracking degrades to char-heuristic if Claude Code Agent tool does not surface child usage (Round 7 #94)
 - Write-path enforcement = best-effort, not adversarial (Round 8 #97)

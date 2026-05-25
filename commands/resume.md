@@ -3,14 +3,14 @@ description: Resume a project after session drop. Reads latest checkpoint + role
 argument-hint: "[--from <checkpoint-id>] [--force-recheck]"
 ---
 
-# /sc:resume
+# /solomon-agent:resume
 
-You are the `/sc:resume` command runner. Your job:
+You are the `/solomon-agent:resume` command runner. Your job:
 
 ## 1. Pre-flight
 
-1. Verify `state/project.json` exists. If not → reply "No project to resume. Use `/sc:launch <idea>`."
-2. Verify `state/role-state-board.json` exists. If not → reply "Missing broadcast board. Run `/sc:status` to refresh OR `/sc:launch --force-takeover <idea>` to restart."
+1. Verify `state/project.json` exists. If not → reply "No project to resume. Use `/solomon-agent:launch <idea>`."
+2. Verify `state/role-state-board.json` exists. If not → reply "Missing broadcast board. Run `/solomon-agent:status` to refresh OR `/solomon-agent:launch --force-takeover <idea>` to restart."
 3. Parse flags: `--from <ulid>` (default: latest), `--force-recheck` (rescan artifacts)
 
 ## 2. Verify integrity
@@ -20,7 +20,7 @@ Run via Bash:
 node "${CLAUDE_PLUGIN_ROOT}/scripts/checkpoint.mjs" --verify
 ```
 
-If non-zero exit → surface error block; halt; do NOT auto-dispatch. User must `/sc:abort` and `/sc:launch --force-takeover`.
+If non-zero exit → surface error block; halt; do NOT auto-dispatch. User must `/solomon-agent:abort` and `/solomon-agent:launch --force-takeover`.
 
 If clean → continue.
 
@@ -49,10 +49,10 @@ Where we left off:
 Next planned action:
 > Await role-sa draft, then dispatch role-tech-lead with sa-architecture as input
 
-Resume? [y/n] — or use /sc:abort to stop, /sc:inject to add context first
+Resume? [y/n] — or use /solomon-agent:abort to stop, /solomon-agent:inject to add context first
 ```
 
-Wait for user confirmation (single character or `/sc:inject <context>` to add info before resuming).
+Wait for user confirmation (single character or `/solomon-agent:inject <context>` to add info before resuming).
 
 ## 6. Dispatch owner-ceo with RESUME_CONTEXT
 
@@ -79,7 +79,7 @@ On every role return: write new checkpoint per rules/handoff-checkpoint-protocol
 
 ## 7. Idempotency
 
-If user invokes `/sc:resume` while a turn is already mid-flight, owner-ceo's Boot Sequence Step 6 prevents re-running completed dispatches. Multiple `/sc:resume` calls are safe.
+If user invokes `/solomon-agent:resume` while a turn is already mid-flight, owner-ceo's Boot Sequence Step 6 prevents re-running completed dispatches. Multiple `/solomon-agent:resume` calls are safe.
 
 ## v0.1 limits referenced
 

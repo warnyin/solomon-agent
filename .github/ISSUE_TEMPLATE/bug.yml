@@ -43,8 +43,8 @@ body:
   - type: textarea
     id: doctor_output
     attributes:
-      label: /sc:doctor output
-      description: Paste output of `/sc:doctor --verbose`
+      label: /solomon-agent:doctor output
+      description: Paste output of `/solomon-agent:doctor --verbose`
       render: shell
     validations:
       required: true
@@ -54,7 +54,7 @@ body:
     attributes:
       label: Steps to reproduce
       placeholder: |
-        1. Run `/sc:launch "..."`
+        1. Run `/solomon-agent:launch "..."`
         2. ...
         3. ...
     validations:
@@ -86,7 +86,7 @@ body:
     attributes:
       label: Pre-flight
       options:
-        - label: I ran `/sc:doctor` and pasted output
+        - label: I ran `/solomon-agent:doctor` and pasted output
           required: true
         - label: I redacted secrets, API keys, and PII from logs
           required: true

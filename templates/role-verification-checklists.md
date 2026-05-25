@@ -13,7 +13,7 @@
 
 - [ ] (id: creative_alternatives_explored) `[SAFETY-adjacent]` Artifact contains `## Alternatives Considered` with ≥ 3 distinct options (or explicit skip-reason for trivial/locked/ADR-deferred cases). At least one alternative evaluated through security lens. Chosen option's rationale stated.
 - [ ] (id: security_threat_lens_applied) `[SAFETY]` STRIDE applied (Spoofing/Tampering/Repudiation/Info-disclosure/DoS/Elevation) to each component / endpoint / data flow in artifact. Assume-hostile-input + fail-closed + least-privilege + no-secrets-in-text defaults observed. New attack surface (if any) listed in `## Security Note` with mitigations + residual risk + owner.
-- [ ] (id: handoff_section_present) `[SAFETY-adjacent]` Artifact body ends with `## Handoff` section per `templates/handoff-card.md` — covering what-i-did, state, what-i-read, what-happens-next, resume-hint, broadcast. Enables /sc:resume after session drop.
+- [ ] (id: handoff_section_present) `[SAFETY-adjacent]` Artifact body ends with `## Handoff` section per `templates/handoff-card.md` — covering what-i-did, state, what-i-read, what-happens-next, resume-hint, broadcast. Enables /solomon-agent:resume after session drop.
 
 **Peer reviewer extra lens (every peer):** Did producer include obviously-bad straw-man alternatives to pad the count? Did STRIDE coverage skip any data flow that crosses a trust boundary? Were security claims actually demonstrated, or just asserted?
 

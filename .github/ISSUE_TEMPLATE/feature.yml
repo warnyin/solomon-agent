@@ -13,7 +13,7 @@ body:
     attributes:
       label: Category
       options:
-        - New command (/sc:*)
+        - New command (/solomon-agent:*)
         - New role agent
         - New skill
         - New rule/protocol

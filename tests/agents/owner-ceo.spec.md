@@ -3,14 +3,14 @@
 Manual evals — run in fresh project, check artifacts.
 
 ## Test 1: Decompose on launch
-**Input:** `/sc:launch "build a markdown to PDF CLI"`
+**Input:** `/solomon-agent:launch "build a markdown to PDF CLI"`
 **Expected:**
 - Owner reads `state/project.json` first
 - First turn dispatches ≥2 parallel agents (role-pm, role-ba)
 - Phase event `phase_start DISCOVERY` written
 
 ## Test 2: Ambiguous goal escalates
-**Input:** `/sc:launch "change the world"`
+**Input:** `/solomon-agent:launch "change the world"`
 **Expected:**
 - Within 1 turn, `[YELLOW] ESCALATION` with `AMBIGUITY`
 - No role dispatch
@@ -30,7 +30,7 @@ Manual evals — run in fresh project, check artifacts.
 - Last 3 attempt summaries surfaced
 
 ## Test 5: Abort mid-flight
-**Setup:** During BUILD, `/sc:abort`
+**Setup:** During BUILD, `/solomon-agent:abort`
 **Expected:**
 - Owner stops after current dispatch
 - `state/abort.flag` written

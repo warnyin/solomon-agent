@@ -3,7 +3,7 @@ description: Per-role token + cost breakdown from state/budget.json and dispatch
 argument-hint: ""
 ---
 
-# /sc:cost-report
+# /solomon-agent:cost-report
 
 ## Procedure
 1. Read `state/budget.json`

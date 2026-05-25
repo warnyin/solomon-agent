@@ -1,7 +1,7 @@
 # Plan: Meta-Agent Orchestrator (codename: Solomon Agent)
 
 ## Summary
-สร้าง Claude Code plugin ที่ผู้ใช้พิมพ์ slash command **อันเดียว** (`/sc:launch "<requirement>"`) แล้วจะเกิด Meta-Owner agent (จำลอง CEO ของบริษัท) ทำการ decompose requirement, จัด team จาก sub-agents 10 roles (PM/BA/SA/TL/Dev/QA/DevSecOps/Security/Infra/ServiceDesk), และ orchestrate งานครบ lifecycle (think → plan → do → test) แบบ autonomous จนเสร็จ โดยจะหยุดถามผู้ใช้เฉพาะกรณีที่เข้าเงื่อนไข escalation เท่านั้น
+สร้าง Claude Code plugin ที่ผู้ใช้พิมพ์ slash command **อันเดียว** (`/solomon-agent:launch "<requirement>"`) แล้วจะเกิด Meta-Owner agent (จำลอง CEO ของบริษัท) ทำการ decompose requirement, จัด team จาก sub-agents 10 roles (PM/BA/SA/TL/Dev/QA/DevSecOps/Security/Infra/ServiceDesk), และ orchestrate งานครบ lifecycle (think → plan → do → test) แบบ autonomous จนเสร็จ โดยจะหยุดถามผู้ใช้เฉพาะกรณีที่เข้าเงื่อนไข escalation เท่านั้น
 
 ## User Story
 As an indie founder / solo product owner,
@@ -11,7 +11,7 @@ So that I don't need to remember which slash command / skill / MCP to call, and 
 ## Problem to Solution
 **Current state**: ผู้ใช้ Claude Code ต้องจำว่าตอนไหนใช้ `/plan`, `/prp-prd`, `/code-review`, `/security-scan`, `/quality-gate`, `/build-fix` ฯลฯ — แต่ละงานต้องเลือก command + agent + skill เอง และต้อง drive loop ด้วยตัวเอง
 
-**Desired state**: ผู้ใช้พิมพ์ `/sc:launch "<goal>"` ครั้งเดียว → Owner agent วางแผน → สั่งทีม sub-agents ทำงานครบ pipeline → ส่ง deliverable + status report กลับ ผู้ใช้เพิ่ม context/decision เฉพาะตอนถูกถาม
+**Desired state**: ผู้ใช้พิมพ์ `/solomon-agent:launch "<goal>"` ครั้งเดียว → Owner agent วางแผน → สั่งทีม sub-agents ทำงานครบ pipeline → ส่ง deliverable + status report กลับ ผู้ใช้เพิ่ม context/decision เฉพาะตอนถูกถาม
 
 ## Metadata
 - **Complexity**: XL (greenfield plugin, 10+ agents, 5+ commands, hooks, orchestration loop)
@@ -45,7 +45,7 @@ So that I don't need to remember which slash command / skill / MCP to call, and 
 ### After
 ```
 +-------------------------------------------------------------+
-| user: /sc:launch "SaaS นัดหมายร้านตัดผม สำหรับไทย"           |
+| user: /solomon-agent:launch "SaaS นัดหมายร้านตัดผม สำหรับไทย"           |
 |                                                             |
 | owner-ceo: [PHASE 1/4 - discovery]                          |
 |   - ดึง role-ba -> market gap analysis                       |
@@ -212,11 +212,11 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 | `.claude-plugin/marketplace.json` | CREATE | Marketplace registration |
 | `README.md` | CREATE | Install + usage + architecture overview |
 | `LICENSE` | CREATE | MIT |
-| `commands/launch.md` | CREATE | Main entrypoint: `/sc:launch "<requirement>"` |
-| `commands/status.md` | CREATE | `/sc:status` — show current phase / active sub-agents / blockers |
-| `commands/inject.md` | CREATE | `/sc:inject "<note>"` — push extra context/decision into running orchestrator |
-| `commands/abort.md` | CREATE | `/sc:abort` — safe shutdown of in-flight loop |
-| `commands/replay.md` | CREATE | `/sc:replay <phase>` — re-run a specific phase with new context |
+| `commands/launch.md` | CREATE | Main entrypoint: `/solomon-agent:launch "<requirement>"` |
+| `commands/status.md` | CREATE | `/solomon-agent:status` — show current phase / active sub-agents / blockers |
+| `commands/inject.md` | CREATE | `/solomon-agent:inject "<note>"` — push extra context/decision into running orchestrator |
+| `commands/abort.md` | CREATE | `/solomon-agent:abort` — safe shutdown of in-flight loop |
+| `commands/replay.md` | CREATE | `/solomon-agent:replay <phase>` — re-run a specific phase with new context |
 | `agents/owner-ceo.md` | CREATE | Meta-orchestrator (the "CEO") |
 | `agents/role-pm.md` | CREATE | Product Manager — user stories, roadmap, prioritization |
 | `agents/role-ba.md` | CREATE | Business Analyst — domain modeling, requirement detail |
@@ -252,7 +252,7 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 | `state/events.ndjson` (gitignored) | RUNTIME | **(gap #6)** Append-only event log for post-hoc debug |
 | `state/role-acls.json` (gitignored) | RUNTIME | **(gap #4)** Per-role Read allow-list (paths/glob), generated from project_type |
 | `state/artifacts/` (gitignored) | RUNTIME | PRD.md, design.md, plan.md, code/, test-reports/ |
-| `docs/architecture.md` | CREATE | Diagram + sequence of `/sc:launch` lifecycle |
+| `docs/architecture.md` | CREATE | Diagram + sequence of `/solomon-agent:launch` lifecycle |
 | `docs/roles.md` | CREATE | Catalog of all 10 roles, scope, IO contracts |
 | `docs/escalation-rules.md` | CREATE | Public-facing version of `rules/escalation.md` |
 | `tests/agents/owner-ceo.spec.md` | CREATE | Eval prompts + expected behaviors |
@@ -316,7 +316,7 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 - **VALIDATE**: Example artifact in the doc passes schema lint via Task 13 test.
 
 ### Task 5: Write `agents/owner-ceo.md` (the meta-agent)
-- **ACTION**: The orchestrator that `/sc:launch` invokes.
+- **ACTION**: The orchestrator that `/solomon-agent:launch` invokes.
 - **IMPLEMENT**:
   - Frontmatter: `name: owner-ceo`, `description: ...`, `tools: ["Read","Write","Edit","Glob","Grep","Bash","Agent","TaskCreate","TaskUpdate","TaskList"]`, `model: opus`
   - Body sections (in order):
@@ -362,8 +362,8 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
     ```
 - **MIRROR**: `COMMAND_FRONTMATTER`
 - **IMPORTS**: none
-- **GOTCHA**: Resist putting orchestration logic in the command body — belongs in `owner-ceo.md` (reusable from `/sc:replay`, `/sc:inject`).
-- **VALIDATE**: `/sc:launch "test goal"` produces `state/project.json` and spawns owner-ceo.
+- **GOTCHA**: Resist putting orchestration logic in the command body — belongs in `owner-ceo.md` (reusable from `/solomon-agent:replay`, `/solomon-agent:inject`).
+- **VALIDATE**: `/solomon-agent:launch "test goal"` produces `state/project.json` and spawns owner-ceo.
 
 ### Task 8: Write the 4 operational commands
 - **ACTION**: `commands/status.md`, `commands/inject.md`, `commands/abort.md`, `commands/replay.md`.
@@ -411,13 +411,13 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 ### Task 12: Write docs (`docs/architecture.md`, `docs/roles.md`, `docs/escalation-rules.md`)
 - **ACTION**: Public-facing docs.
 - **IMPLEMENT**:
-  - `architecture.md` — ASCII sequence diagram of `/sc:launch` lifecycle, file map, state machine
+  - `architecture.md` — ASCII sequence diagram of `/solomon-agent:launch` lifecycle, file map, state machine
   - `roles.md` — table from `rules/role-charters.md` rendered for human readers
   - `escalation-rules.md` — narrative version of `rules/escalation.md` with rationale per rule
 - **MIRROR**: ECC `README.md` tone
 - **IMPORTS**: none
 - **GOTCHA**: Don't duplicate `rules/` content verbatim — link or include via marker. Risk of drift.
-- **VALIDATE**: A new reader can `/sc:launch "X"` after reading only `README.md` + `docs/architecture.md`.
+- **VALIDATE**: A new reader can `/solomon-agent:launch "X"` after reading only `README.md` + `docs/architecture.md`.
 
 ### Task 13: Write evals (`tests/agents/owner-ceo.spec.md` + `tests/integration/*.spec.md`)
 - **ACTION**: Behavioral evals (prompts + expected behaviors, not unit tests of code).
@@ -434,7 +434,7 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 - **ACTION**: Install + 30-second usage + architecture link.
 - **IMPLEMENT**:
   - Install block (plugin marketplace add)
-  - Quickstart: `/sc:launch "build a SaaS for ..."`
+  - Quickstart: `/solomon-agent:launch "build a SaaS for ..."`
   - Roles diagram
   - Link to docs
   - License + acknowledgments (credit ECC reference)
@@ -447,7 +447,7 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 - **ACTION**: Throwaway goal to test full plugin.
 - **IMPLEMENT**:
   - `/plugin install` from local path
-  - `/sc:launch "build a markdown-to-PDF CLI"` (small scope to keep run cheap)
+  - `/solomon-agent:launch "build a markdown-to-PDF CLI"` (small scope to keep run cheap)
   - Observe phase markers, escalations, artifacts
   - Fix bugs surfaced (likely: dispatch parallelism, escalation noise, artifact schema gaps)
 - **MIRROR**: n/a (validation step)
@@ -463,11 +463,11 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 
 | Test | Input | Expected Output | Edge Case? |
 |---|---|---|---|
-| Happy path launch | `/sc:launch "build markdown to PDF CLI"` | Final report + >=1 artifact per phase | No |
-| Ambiguous goal | `/sc:launch "change the world"` | `[YELLOW] ESCALATION` within turn 1 | Yes |
-| Inject context mid-run | `/sc:inject "use Rust not Go"` after dispatch | Next dispatch reflects injection | Yes |
-| Abort | `/sc:abort` during BUILD phase | Graceful stop + state preserved | Yes |
-| Replay phase | `/sc:replay DESIGN` after edit to PRD | DESIGN re-runs; later artifacts marked superseded | Yes |
+| Happy path launch | `/solomon-agent:launch "build markdown to PDF CLI"` | Final report + >=1 artifact per phase | No |
+| Ambiguous goal | `/solomon-agent:launch "change the world"` | `[YELLOW] ESCALATION` within turn 1 | Yes |
+| Inject context mid-run | `/solomon-agent:inject "use Rust not Go"` after dispatch | Next dispatch reflects injection | Yes |
+| Abort | `/solomon-agent:abort` during BUILD phase | Graceful stop + state preserved | Yes |
+| Replay phase | `/solomon-agent:replay DESIGN` after edit to PRD | DESIGN re-runs; later artifacts marked superseded | Yes |
 | Escalation: SCOPE_EXPLOSION | Goal est. 2 days; sub-agent reports 2 weeks | Owner escalates, no silent proceed | Yes |
 | Escalation: DEAD_END | Same build error 3 attempts | Owner escalates | Yes |
 | Parallel dispatch | Single requirement | First dispatch has >=3 parallel `Agent` calls | No |
@@ -475,11 +475,11 @@ SOURCE: derived from ECC `skills/autonomous-loops/` + user's `feedback_mtf_entry
 | Plugin install | `/plugin install ./` | No schema errors; commands appear in `/help` | No |
 
 ### Edge Cases Checklist
-- [x] Empty requirement (`/sc:launch ""`) → error gracefully, no silent spawn
+- [x] Empty requirement (`/solomon-agent:launch ""`) → error gracefully, no silent spawn
 - [x] Very long requirement (>8k tokens) → owner summarizes first
 - [x] Requirement file path that doesn't exist → error with hint
-- [x] Multiple parallel `/sc:launch` in same project → second blocked by `state/lock`
-- [x] Restart Claude Code mid-loop → `/sc:status` recovers; user can `/sc:replay <current-phase>`
+- [x] Multiple parallel `/solomon-agent:launch` in same project → second blocked by `state/lock`
+- [x] Restart Claude Code mid-loop → `/solomon-agent:status` recovers; user can `/solomon-agent:replay <current-phase>`
 - [x] Hook script missing Node.js → graceful fallback (warn, don't crash)
 
 ---
@@ -512,19 +512,19 @@ EXPECT: All files have `name` (agents) or `description` (commands).
 /plugin install solomon-agent
 /help
 ```
-EXPECT: `/sc:launch`, `/sc:status`, `/sc:inject`, `/sc:abort`, `/sc:replay` listed.
+EXPECT: `/solomon-agent:launch`, `/solomon-agent:status`, `/solomon-agent:inject`, `/solomon-agent:abort`, `/solomon-agent:replay` listed.
 
 ### Dry-run
 ```
-/sc:launch "build a markdown to PDF CLI in node"
+/solomon-agent:launch "build a markdown to PDF CLI in node"
 ```
 EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final report at end.
 
 ### Manual Validation
 - [ ] Install on clean machine succeeds
-- [ ] First `/sc:launch` produces final report under 10 minutes on a tiny goal
+- [ ] First `/solomon-agent:launch` produces final report under 10 minutes on a tiny goal
 - [ ] Escalation messages visually distinct (`[YELLOW] ESCALATION` prefix)
-- [ ] `state/` directory survives `/sc:abort` and restart
+- [ ] `state/` directory survives `/solomon-agent:abort` and restart
 - [ ] No secrets leak into `state/artifacts/`
 - [ ] Token spend within set budget
 
@@ -532,7 +532,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 
 ## Acceptance Criteria
 - [ ] Plugin installs via `/plugin install` with zero schema errors
-- [ ] `/sc:launch "<goal>"` completes a tiny goal end-to-end without user intervention (except declared escalations)
+- [ ] `/solomon-agent:launch "<goal>"` completes a tiny goal end-to-end without user intervention (except declared escalations)
 - [ ] Each of 10 role agents has a charter, prompt-defense baseline, and output contract
 - [ ] `rules/escalation.md` covers all 5 conditions with worked examples
 - [ ] Owner CEO uses parallel `Agent` dispatch for independent roles
@@ -544,7 +544,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - [ ] **(gap #3)** When 2 artifacts conflict on same field, owner dispatches arbiter; resolution logged as `Decision`; deadlock → escalate
 - [ ] **(gap #4)** `guard-isolation.mjs` blocks Read outside role ACL; each role agent body declares ACL directive
 - [ ] **(gap #5)** Each `agents/role-*.md` frontmatter `tools:` matches the row in `rules/external-tool-routing.md` (no extras)
-- [ ] **(gap #6)** Every owner/role action emits an event to `state/events.ndjson`; `/sc:status` renders timeline from log
+- [ ] **(gap #6)** Every owner/role action emits an event to `state/events.ndjson`; `/solomon-agent:status` renders timeline from log
 - [ ] **(gap #7)** Owner classifies `project_type` in DISCOVERY; loads matching template from `rules/project-templates.md`; unknown type defaults to `web-app` + logs warning
 - [ ] **(gap #8)** Each role agent body explicitly lists which ECC skills it MAY invoke (per routing table); no role invokes outside its allow-list
 - [ ] **(gap #9)** `validate-artifact.mjs` fails on missing required sections; PostToolUse hook fires on Write to `state/artifacts/*.md`; owner re-dispatches on `artifact_invalid`
@@ -556,8 +556,8 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - [ ] **(gap #15)** All artifact writes go through `state-store.writeArtifact()` (atomic rename); direct Write to `state/artifacts/*` rejected by PreToolUse hook
 - [ ] **(gap #16)** Every hook script wraps in try/catch + writes to `state/hook-errors.log` + exits 0 on internal crash; only `guard-secrets.mjs` exits non-zero on detection
 - [ ] **(gap #17)** `sanitize-input.mjs` runs in `commands/launch.md` before owner dispatch; user content wrapped in `<USER_REQUIREMENT>` tags; injection patterns stripped; `INJECTION_DETECTED` escalation always halts
-- [ ] **(gap #18)** `temperature=0`, fixed `top_p`, seed (ULID) recorded per dispatch in `events.ndjson`; `/sc:replay` reads them and re-uses identical params
-- [ ] **(gap #19)** `/sc:compact` archives `events.ndjson` > 10MB + superseded artifacts > 7d; Stop hook warns if `state/` > 50MB
+- [ ] **(gap #18)** `temperature=0`, fixed `top_p`, seed (ULID) recorded per dispatch in `events.ndjson`; `/solomon-agent:replay` reads them and re-uses identical params
+- [ ] **(gap #19)** `/solomon-agent:compact` archives `events.ndjson` > 10MB + superseded artifacts > 7d; Stop hook warns if `state/` > 50MB
 - [ ] **(gap #20)** `validate-artifact.mjs` semantic pass emits `semantic_validation_warning` events on broken refs (non-blocking); >3 warnings in one phase → owner dispatches arbiter
 - [ ] **(gap #21)** `state.sc_version` checked on bootstrap; mismatch with `plugin.json:version` → runs `scripts/migrations/<from>-to-<to>.mjs` if exists, else escalates `STATE_VERSION_MISMATCH`; downgrade always refused
 - [ ] **(gap #22)** `final-report.md` has both `## Executive Summary` (≤10 lines, no jargon) and `## Technical Detail`
@@ -568,18 +568,18 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - [ ] **(gap #27)** `guard-isolation.mjs` resolves real path + rejects `..` + rejects out-of-root symlinks; security test passes
 - [ ] **(gap #28)** Owner writes `state/checkpoint.json` every phase exit + 30min; > 2hr → `LONG_SESSION_WARNING`; > 6hr → auto-abort
 - [ ] **(gap #29)** SIGINT/SIGTERM triggers cleanup (marks aborted, releases lock, writes abort.flag); bootstrap recovers orphans
-- [ ] **(gap #30)** `phase_progress` events emitted every 60s; `/sc:status` reads live tail
-- [ ] **(gap #31)** Every event has `prev_hash`; `verify-log.mjs` walks chain; `/sc:status` warns on break
+- [ ] **(gap #30)** `phase_progress` events emitted every 60s; `/solomon-agent:status` reads live tail
+- [ ] **(gap #31)** Every event has `prev_hash`; `verify-log.mjs` walks chain; `/solomon-agent:status` warns on break
 - [ ] **(gap #32)** `sc.config.json:skill_versions` + `mcp_versions` checked at bootstrap; mismatch escalates `DEPENDENCY_VERSION_MISMATCH`
 - [ ] **(gap #33)** `scripts/uninstall.mjs` prompts keep/archive/delete state/ before plugin uninstall; README documents
 - [ ] **(gap #34)** `state/lock` records pid+hostname+user; cross-host contention escalates `MULTI_USER_LOCK`; takeover requires `--force-takeover`
 - [ ] **(gap #35)** `.github/workflows/test.yml` + `release.yml` exist; CI runs `node --test scripts/` on PR
-- [ ] **(gap #36)** `/sc:cost-report` renders per-role markdown table; appended to `final-report.md`
+- [ ] **(gap #36)** `/solomon-agent:cost-report` renders per-role markdown table; appended to `final-report.md`
 - [ ] **(gap #37)** HANDOFF moves superseded → `state/archive/artifacts/`; events snapshot gzip'd; `final-report.md` canonical
 - [ ] **(gap #38)** `docs/architecture.md` includes 3+ mermaid diagrams (sequence, state machine, component map)
 - [ ] **(gap #39)** `scripts/migrations/test-harness.mjs` + fixtures convention documented in `tests/migrations/README.md`
 - [ ] **(gap #40)** `docs/comparison.md` honestly compares vs LangGraph/CrewAI/AutoGen/ECC
-- [ ] **(gap #41)** `state/global-stats.json` accumulates across runs; `/sc:stats` renders
+- [ ] **(gap #41)** `state/global-stats.json` accumulates across runs; `/solomon-agent:stats` renders
 - [ ] **(gap #42)** `sc.config.json:observability.sink` supports null/http; failures never block core flow
 - [ ] **(gap #43)** `docs/when-to-use.md` provides decision matrix + 3 examples
 - [ ] **(gap #44)** README has install badges; CHANGELOG/CONTRIBUTING exist; marketplace submission doc present
@@ -614,7 +614,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - [ ] **(gap #73)** `sc.config.json:bootstrap.event_window` configurable (default 50, max 500)
 - [ ] **(gap #74)** Simultaneous escalations bundle into one numbered ESCALATION block
 - [ ] **(gap #75)** `guard-rate.mjs` writes `rate-window.json` via atomic-rename
-- [ ] **(gap #76)** Second `/sc:launch` in completed project prompts archive/append/cancel
+- [ ] **(gap #76)** Second `/solomon-agent:launch` in completed project prompts archive/append/cancel
 - [ ] **(gap #77)** `commands/launch.md` documents `--force-takeover` regex parsing
 - [ ] **(gap #78)** `jargon-blocklist.txt` ships with seed list; `sc.config.json:jargon_allow` override; `<!-- ALLOW-JARGON -->` escape
 - [ ] **(gap #79)** `scripts/lib/paths.mjs` handles cross-platform `os.homedir()`; first-run init with correct permissions
@@ -658,7 +658,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - `scripts/guard-budget.mjs` registered as PreToolUse matcher `Agent` — read budget.json, if `tokens_used >= tokens_budget * hard_limit` → exit non-zero with message "BUDGET_EXCEEDED — escalate"; if `>= soft_limit` → log warning event + allow
 - `scripts/state-store.mjs` exports `recordTokens(role, count)` — owner + roles call after each LLM turn (or estimate from input/output chars * 0.25)
 - Owner agent body: before every `Agent` dispatch, call budget check; on soft limit → escalate as new condition `BUDGET_WARNING`; on hard → halt + escalate `BUDGET_EXCEEDED`
-- Default: 200k tokens / $5 USD per `/sc:launch` run (override via `state/project.json:budget_override`)
+- Default: 200k tokens / $5 USD per `/solomon-agent:launch` run (override via `state/project.json:budget_override`)
 
 ### Gap #2 — Cross-Session Memory Schema
 **New Task 17: Define memory entities + ingest at HANDOFF**
@@ -719,7 +719,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
 - Event types: `phase_start`, `phase_end`, `dispatch`, `dispatch_complete`, `artifact_created`, `escalation`, `decision`, `budget_warning`, `budget_exceeded`, `conflict_detected`, `conflict_resolved`, `acl_violation`, `abort`, `final_report`
 - Every owner + role action calls `event-log.mjs append` via `state-store.mjs:logEvent()` wrapper (single import surface)
 - `commands/status.md` body now reads last N events from `events.ndjson` and renders timeline
-- Post-mortem command optional (v0.2): `/sc:postmortem` reads full log + emits Lesson entities
+- Post-mortem command optional (v0.2): `/solomon-agent:postmortem` reads full log + emits Lesson entities
 
 ### Gap #7 — Project-Type Templates
 **Part of new Task 18 file: `rules/project-templates.md`**
@@ -731,7 +731,7 @@ EXPECT: Phase markers printed; artifacts written under `state/artifacts/`; final
   - **mobile-app**: extra DESIGN-NATIVE phase; budget 300k
 - Owner DISCOVERY phase MUST classify project type (ask role-ba or use heuristic on keywords); writes `state/project.json:project_type` before phase exit
 - Unknown / hybrid type → default to web-app template + log warning event
-- Template selection is irreversible mid-run; switch requires `/sc:abort` + new launch
+- Template selection is irreversible mid-run; switch requires `/solomon-agent:abort` + new launch
 
 ### Gap #8 — ECC Skill Mapping
 **Covered by Gap #5 table** (same file `rules/external-tool-routing.md` for single source of truth — avoids the duplication risk noted in Task 12 "GOTCHA: Don't duplicate rules content")
@@ -942,8 +942,8 @@ node -e "const c=require('./scripts/state-store.mjs').loadConfig(); console.asse
 - `scripts/state-compact.mjs`:
   - `events.ndjson` > 10MB → move to `state/archive/events-<ts>.ndjson.gz` via `zlib.createGzip()` → truncate live file
   - artifacts with `status:superseded` and `produced_at` > 7 days → move to `state/archive/artifacts/`
-- `commands/compact.md` — manual trigger (`/sc:compact`)
-- `hooks/hooks.json` Stop hook → if `state/` total size > 50MB → emit warning in final report suggesting `/sc:compact`
+- `commands/compact.md` — manual trigger (`/solomon-agent:compact`)
+- `hooks/hooks.json` Stop hook → if `state/` total size > 50MB → emit warning in final report suggesting `/solomon-agent:compact`
 - Auto-compact at HANDOFF for archived runs (NOT mid-run — preserves debugging)
 - New event: `state_compacted`
 
@@ -1019,7 +1019,7 @@ node scripts/session-bootstrap.mjs  # EXPECT: STATE_VERSION_MISMATCH escalation
 - **Single hook bug freezes session** → mitigated by graceful catch + audit log (Gap #16)
 - **User prompt carries injection** → mitigated by sanitizer + delimiter + agent-side directive (Gap #17)
 - **Non-reproducible runs** → mitigated by temperature=0 + replay seed (Gap #18, best-effort)
-- **Unbounded state growth** → mitigated by compact at HANDOFF + manual `/sc:compact` (Gap #19)
+- **Unbounded state growth** → mitigated by compact at HANDOFF + manual `/solomon-agent:compact` (Gap #19)
 - **Semantic drift between artifacts** → mitigated by reference validator + arbiter on threshold (Gap #20)
 - **Plugin upgrade breaks live project** → mitigated by version gate + migration runner (Gap #21)
 - **Final report unreadable to non-tech owner** → mitigated by dual-mode report (Gap #22)
@@ -1066,7 +1066,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 ### Gap #28 — Long-Running Session Timeout
 - Owner agent body: at each phase exit + every 30 min wall clock → write `state/checkpoint.json` (full snapshot)
 - `events.ndjson` records `wall_clock_elapsed_seconds` on every event
-- If `elapsed > 7200` (2hr): emit `LONG_SESSION_WARNING` escalation suggesting `/sc:abort` + `/sc:replay <current-phase>` in fresh session
+- If `elapsed > 7200` (2hr): emit `LONG_SESSION_WARNING` escalation suggesting `/solomon-agent:abort` + `/solomon-agent:replay <current-phase>` in fresh session
 - Hard limit 6hr → auto-abort + checkpoint
 - New event: `long_session_warning`, `auto_abort_long_session`
 
@@ -1108,7 +1108,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 
 ### Gap #34 — Multi-Developer Collaboration
 - `state/lock` schema upgraded: `{pid:int, hostname:string, user:string, started_at:ISO-8601, project_id:ulid}`
-- On lock contention (`/sc:launch` while another holds lock):
+- On lock contention (`/solomon-agent:launch` while another holds lock):
   - if same hostname+user → likely orphan → offer takeover (`--force-takeover` flag)
   - if different → escalate `MULTI_USER_LOCK` with current holder info; never auto-takeover
 - v0.1 explicit limit: file-based lock = single-host; cross-host collab → v0.2
@@ -1121,7 +1121,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - New files in `.github/workflows/`
 
 ### Gap #36 — Cost Telemetry Per Role
-- `commands/cost-report.md` (new `/sc:cost-report`) — reads `state/budget.json:per_role` + dispatch events; renders markdown table: role | dispatches | tokens | est_usd | % of budget
+- `commands/cost-report.md` (new `/solomon-agent:cost-report`) — reads `state/budget.json:per_role` + dispatch events; renders markdown table: role | dispatches | tokens | est_usd | % of budget
 - Added to `final-report.md` as appendix
 - Surfaces what Gap #1 already records
 
@@ -1135,7 +1135,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - Owner emits `handoff_complete` event when all done
 
 ### Gap #38 — Diagram Quality
-- `docs/architecture.md` includes mermaid diagrams: sequence (`/sc:launch` lifecycle), state machine (phases), component (file map)
+- `docs/architecture.md` includes mermaid diagrams: sequence (`/solomon-agent:launch` lifecycle), state machine (phases), component (file map)
 - ASCII fallback kept for terminal-only viewers
 - New section: "Diagrams"
 
@@ -1153,7 +1153,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 ### Gap #41 — Success Metrics
 - `state/global-stats.json` (in user home, cross-project): `{total_launches:int, by_outcome:{shipped,aborted,escalated_out}, avg_cost_usd:float, avg_phases:float, by_project_type:{...}}`
 - Updated by `session-report.mjs` at HANDOFF/abort
-- `commands/stats.md` (`/sc:stats`) — renders summary
+- `commands/stats.md` (`/solomon-agent:stats`) — renders summary
 
 ### Gap #42 — External Observability Sink
 - `sc.config.json` adds:
@@ -1196,11 +1196,11 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - **#49** Owner knows role-internal details → `agents/manifest.json` (auto-gen by `scripts/build-manifest.mjs`); owner reads from manifest, never hardcodes role names
 - **#50** Role swap silent capability mismatch → `scripts/validate-role.mjs` checks swapped role honors charter contract (tools, output schema); session fails fast on mismatch
 - **#51** Hook ordering undefined → `hooks/hooks.json` adds `priority:int` per hook; documented in `docs/hook-contract.md`; first-block-wins
-- **#52** `events.ndjson` overloaded (4 concerns) → split into `events.ndjson` (audit), `status.ndjson` (UX tail), `replay-trace.ndjson` (deterministic); `/sc:compact` per-file
+- **#52** `events.ndjson` overloaded (4 concerns) → split into `events.ndjson` (audit), `status.ndjson` (UX tail), `replay-trace.ndjson` (deterministic); `/solomon-agent:compact` per-file
 - **#53** `project_type` irreversible mid-run → `rules/project-templates.md` adds soft-classify (re-classifiable until DESIGN exit) vs hard-classify (locked after); brownfield reclassification allowed in DISCOVERY only
 - **#54** Inner agent ACL inheritance unspecified → `rules/context-isolation.md` rule: inner agents inherit parent ACL; cannot widen; depth-2 entries logged in `state/role-acls.json:inheritance_chain`
 - **#55** Memory entity versioning missing → `rules/memory-schema.md` adds `schema_version` per entity; `scripts/memory-migrations/<from>-to-<to>.mjs` runs on upgrade
-- **#56** `/sc:inject` bypasses sanitizer → `commands/inject.md` pipes `$ARGUMENTS` through `sanitize-input.mjs` (same as launch)
+- **#56** `/solomon-agent:inject` bypasses sanitizer → `commands/inject.md` pipes `$ARGUMENTS` through `sanitize-input.mjs` (same as launch)
 - **#57** `needs_input:` handler undefined → `rules/needs-input-protocol.md` action matrix: request_type → owner action (widen ACL / re-dispatch widened role / dispatch different role / escalate)
 - **#58** Skills duplicate rules content → `scripts/build-skills.mjs` auto-generates skills from rules at install/upgrade; manual skill edit forbidden (PreToolUse hook on `skills/`)
 - **#59** Final report by script lacks LLM quality → `session-report.mjs` assembles structure ONLY; dispatches `role-service-desk` for Executive Summary prose
@@ -1224,7 +1224,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - **#73** Bootstrap 50-event tail is magic number → `sc.config.json:bootstrap.event_window` (default 50, max 500); docs explain tradeoff (more = slower restart, less = risk truncated state)
 - **#74** Simultaneous escalations have no tie-break → `rules/escalation.md` adds bundling rule: owner emits SINGLE `[YELLOW] ESCALATION` block with numbered conditions; user replies addressing each by number
 - **#75** `guard-rate.mjs` sliding window race under parallel dispatch → `state/rate-window.json` writes via `state-store.atomicWrite()` (same atomic-rename pattern as artifacts)
-- **#76** Second `/sc:launch` in completed project undefined → `commands/launch.md` body: if `state/project.json` exists with `status:complete` → prompts archive / new project-id appended / cancel
+- **#76** Second `/solomon-agent:launch` in completed project undefined → `commands/launch.md` body: if `state/project.json` exists with `status:complete` → prompts archive / new project-id appended / cancel
 - **#77** `--force-takeover` flag parsing unspecified → `commands/launch.md` body documents regex parsing on `$ARGUMENTS`; flag MUST be first token; examples in doc
 - **#78** `docs/jargon-blocklist.txt` initial list undefined → ships with documented seed list (acronyms requiring expansion); override via `sc.config.json:jargon_allow:[]`; escape via comment marker `<!-- ALLOW-JARGON -->`
 - **#79** `global-stats.json` path resolution cross-platform → `scripts/lib/paths.mjs` centralized: `os.homedir()` + Windows/POSIX detection; first-run init creates dir with correct permissions
@@ -1271,8 +1271,8 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 
 ### #89 [MED] backup-owner automated failover infeasible — SUPERSEDES Gap #45
 - **Problem**: Claude Code has no agent supervisor. Dead owner cannot emit health-check. 60s heartbeat cannot exist.
-- **Fix**: redefine as **user-triggered failover**: new `commands/failover.md` (`/sc:failover`) swaps owner → `agents/backup-owner.md` reading last `state/checkpoint.json`; drop "automatic" claim; remove 60s heartbeat from acceptance criteria
-- v0.1 limitation honestly stated in `docs/architecture.md`: "no liveness monitoring; user must invoke `/sc:failover` on suspected stall (>10min no progress events)"
+- **Fix**: redefine as **user-triggered failover**: new `commands/failover.md` (`/solomon-agent:failover`) swaps owner → `agents/backup-owner.md` reading last `state/checkpoint.json`; drop "automatic" claim; remove 60s heartbeat from acceptance criteria
+- v0.1 limitation honestly stated in `docs/architecture.md`: "no liveness monitoring; user must invoke `/solomon-agent:failover` on suspected stall (>10min no progress events)"
 
 ### #90 [MED] HMAC chain key co-located with events = attacker rewrites both — SUPERSEDES Gap #63
 - **Problem**: Attacker with file access tampers events AND rewrites key. Chain offers no protection vs filesystem-level adversary.
@@ -1286,7 +1286,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - [ ] **(gap #86)** All `agents/role-*.md` pin `model:` to specific version string; determinism scope honestly documented
 - [ ] **(gap #87)** `skills/` files pre-generated + committed; CI `build-skills.mjs --check` fails PR on drift
 - [ ] **(gap #88)** All `hooks/hooks.json` commands use `${CLAUDE_PLUGIN_ROOT}/scripts/...`; CI lint rejects `./scripts`
-- [ ] **(gap #89)** `/sc:failover` command exists; backup-owner reads `state/checkpoint.json`; automatic heartbeat language removed
+- [ ] **(gap #89)** `/solomon-agent:failover` command exists; backup-owner reads `state/checkpoint.json`; automatic heartbeat language removed
 - [ ] **(gap #90)** `docs/security-model.md` honestly scopes tamper detection; optional memory MCP anchor for v0.1; external sink anchor v0.2
 
 ---
@@ -1322,7 +1322,7 @@ User has explicitly directed: aud all discoverable gaps; spawn sub-agents to fin
 - **Problem**: Frontmatter parser likely accepts only `sonnet|opus|haiku|inherit`; version strings (`claude-sonnet-4-5-20250929`) may fail validation or silently alias-resolve, defeating "deterministic pin"
 - **Fix**:
   - Default to documented aliases (`sonnet|opus|haiku|inherit`) per Claude Code contract
-  - `docs/architecture.md` updated honest statement: "v0.1: model version drift between runs is undefendable; `/sc:replay` reproduces orchestration STRUCTURE (which roles, what artifacts, what decisions) but NOT exact prose"
+  - `docs/architecture.md` updated honest statement: "v0.1: model version drift between runs is undefendable; `/solomon-agent:replay` reproduces orchestration STRUCTURE (which roles, what artifacts, what decisions) but NOT exact prose"
   - Drop "determinism guarantee" language from acceptance criteria — replace with "structural reproducibility"
   - v0.2: if Claude Code adds version-pin support, upgrade
 

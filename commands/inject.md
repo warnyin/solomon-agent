@@ -3,7 +3,7 @@ description: Push extra context, decision, or correction into running orchestrat
 argument-hint: "<context | decision | correction>"
 ---
 
-# /sc:inject
+# /solomon-agent:inject
 
 ## Procedure
 

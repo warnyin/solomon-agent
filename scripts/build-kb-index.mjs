@@ -137,7 +137,7 @@ async function buildFull() {
   const arts = await readArtifacts();
   if (arts.length === 0) {
     await atomicWrite(path.join(OUT_DIR, 'index.md'),
-      `# Knowledge Base\n\n> No artifacts yet. Run /sc:launch to produce some.\n`);
+      `# Knowledge Base\n\n> No artifacts yet. Run /solomon-agent:launch to produce some.\n`);
     await atomicWrite(path.join(OUT_DIR, 'manifest.json'),
       JSON.stringify({ schema_version: 1, built_at: new Date().toISOString(), artifacts_indexed: 0 }, null, 2));
     console.log('[build-kb-index] no artifacts; wrote empty index');
@@ -169,7 +169,7 @@ async function buildFull() {
       .map(a => `| ${(a.produced_at || '').slice(0, 19)} | ${a.role} | ${a.phase} | ${a.type} | ${a.title.slice(0, 60)} | ${a.status} |`),
     ``,
     `## Search`,
-    `Use \`/sc:kb <query>\`.`,
+    `Use \`/solomon-agent:kb <query>\`.`,
     ``,
   ].join('\n');
   await atomicWrite(path.join(OUT_DIR, 'index.md'), indexLines);

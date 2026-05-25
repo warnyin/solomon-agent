@@ -3,7 +3,7 @@ description: Cross-project success metrics (Round 5 #41). Reads ~/.claude/plugin
 argument-hint: ""
 ---
 
-# /sc:stats
+# /solomon-agent:stats
 
 ## Procedure
 1. Resolve path via `node ${CLAUDE_PLUGIN_ROOT}/scripts/lib/paths.mjs --global-stats`

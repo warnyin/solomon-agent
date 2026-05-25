@@ -89,7 +89,7 @@ git push --tags
 
 ### 2.3 ทดสอบ launch แรก
 ```
-/sc:launch "build a markdown to PDF CLI in Node.js"
+/solomon-agent:launch "build a markdown to PDF CLI in Node.js"
 ```
 
 **คาดหวัง:**
@@ -108,14 +108,14 @@ git push --tags
 
 ### 3.1 Operational commands
 ```
-/sc:status                   # ดู phase + active dispatches
-/sc:inject "use TypeScript"  # ส่งข้อมูลเพิ่มระหว่าง run
-/sc:abort                    # หยุดอย่างนุ่มนวล
-/sc:replay DESIGN            # รัน phase ใหม่
-/sc:failover                 # swap to backup-owner ถ้า owner ค้าง
-/sc:cost-report              # token usage per role
-/sc:stats                    # cross-project metrics
-/sc:compact                  # archive logs ถ้า state/ ใหญ่
+/solomon-agent:status                   # ดู phase + active dispatches
+/solomon-agent:inject "use TypeScript"  # ส่งข้อมูลเพิ่มระหว่าง run
+/solomon-agent:abort                    # หยุดอย่างนุ่มนวล
+/solomon-agent:replay DESIGN            # รัน phase ใหม่
+/solomon-agent:failover                 # swap to backup-owner ถ้า owner ค้าง
+/solomon-agent:cost-report              # token usage per role
+/solomon-agent:stats                    # cross-project metrics
+/solomon-agent:compact                  # archive logs ถ้า state/ ใหญ่
 ```
 
 ### 3.2 ปรับ config ผ่าน `sc.config.json`
@@ -181,9 +181,9 @@ node scripts/check-drift.mjs   # agent ↔ rule drift
 
 | ปัญหา | วิธีแก้ |
 |---|---|
-| Owner ค้าง >10 นาที | `/sc:failover` |
-| Budget เกิน | `/sc:status` ดู → แก้ `sc.config.json:budget` → `/sc:abort` + รันใหม่ |
-| State ใหญ่เกิน | `/sc:compact` |
+| Owner ค้าง >10 นาที | `/solomon-agent:failover` |
+| Budget เกิน | `/solomon-agent:status` ดู → แก้ `sc.config.json:budget` → `/solomon-agent:abort` + รันใหม่ |
+| State ใหญ่เกิน | `/solomon-agent:compact` |
 | Audit log ถูกแก้ | `node scripts/verify-log.mjs` บอกบรรทัดที่ break |
 | Hook scripts crash | ดู `state/hook-errors.log` |
 | Uninstall | `node scripts/uninstall.mjs` แล้ว `/plugin uninstall solomon-agent` |
@@ -212,29 +212,29 @@ node scripts/check-drift.mjs   # agent ↔ rule drift
 
 3 surfaces เผยต้นทุนชัด:
 
-- **Pre-flight** ก่อน `/sc:launch` → `scripts/estimate-cost.mjs` แสดง expected ~$X (low—high band) → user confirm y/n/budget=
+- **Pre-flight** ก่อน `/solomon-agent:launch` → `scripts/estimate-cost.mjs` แสดง expected ~$X (low—high band) → user confirm y/n/budget=
 - **Mid-flight** ทุก checkpoint → `scripts/burn-rate-watch.mjs` แสดง `[$] BURN — N% used · X k tok/min · projected $Y`
-- **Retrospective** ที่ HANDOFF → `/sc:cost-report` เทียบ pre-flight vs actual + per-feature + per-role + calibration
+- **Retrospective** ที่ HANDOFF → `/solomon-agent:cost-report` เทียบ pre-flight vs actual + per-feature + per-role + calibration
 
 Bypass: `sc.config.json: {"cost_transparency": {"preflight": false}}` (ไม่แนะนำ) per [`rules/cost-transparency-protocol.md`](rules/cost-transparency-protocol.md)
 
 ---
 
-## 🩺 `/sc:doctor` — Health Check (Round 17)
+## 🩺 `/solomon-agent:doctor` — Health Check (Round 17)
 
 15 checks: node version, manifests, scripts runnable, hook schema, role/command/skill counts, HMAC chain, codemap/KB freshness
 
 ```
-/sc:doctor              # quick check
-/sc:doctor --verbose    # per-check detail
-/sc:doctor --fix        # safe auto-repair (rebuild stale codemap/KB)
+/solomon-agent:doctor              # quick check
+/solomon-agent:doctor --verbose    # per-check detail
+/solomon-agent:doctor --fix        # safe auto-repair (rebuild stale codemap/KB)
 ```
 
 ---
 
 ## 🧪 Dry-Run Harness (Round 18)
 
-CI ที่ผ่านมาเป็น stub — ตอนนี้ `scripts/dry-run-harness.mjs` simulate full /sc:launch lifecycle ด้วย mock owner-ceo + fixtures:
+CI ที่ผ่านมาเป็น stub — ตอนนี้ `scripts/dry-run-harness.mjs` simulate full /solomon-agent:launch lifecycle ด้วย mock owner-ceo + fixtures:
 
 ```bash
 node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/basic.json
@@ -257,14 +257,14 @@ node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/bas
 
 สำหรับ community ที่อยากเพิ่ม:
 - [`docs/extending-add-role.md`](docs/extending-add-role.md) — เพิ่ม role agent ใหม่ 7 ขั้น
-- [`docs/extending-add-command.md`](docs/extending-add-command.md) — เพิ่ม `/sc:*` command ใหม่ 5 ขั้น
+- [`docs/extending-add-command.md`](docs/extending-add-command.md) — เพิ่ม `/solomon-agent:*` command ใหม่ 5 ขั้น
 - [`docs/extending-add-skill.md`](docs/extending-add-skill.md) — เพิ่ม cognitive skill ใหม่ 4 ขั้น
 
 ---
 
-## 🎯 `/sc:do` — Meta-Command (Round 15)
+## 🎯 `/solomon-agent:do` — Meta-Command (Round 15)
 
-ถ้าจำไม่ได้ว่าจะใช้ command ไหน — ใช้ **`/sc:do "<พิมพ์อะไรก็ได้>"`** ทำได้ทุกอย่าง:
+ถ้าจำไม่ได้ว่าจะใช้ command ไหน — ใช้ **`/solomon-agent:do "<พิมพ์อะไรก็ได้>"`** ทำได้ทุกอย่าง:
 
 - อ่าน state ปัจจุบัน (project / phase / active_role / pending_escalations) ก่อนเสมอ
 - จัดประเภท intent จากคำที่พิมพ์ (ภาษาไทย + อังกฤษ)
@@ -273,18 +273,18 @@ node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/bas
 
 **ตัวอย่าง:**
 ```
-/sc:do ดู status ปัจจุบัน        → /sc:status
-/sc:do ต่อจากที่หยุด              → /sc:resume
-/sc:do หา design เรื่อง auth     → /sc:kb auth
-/sc:do owner ค้างมา 10 นาที       → /sc:failover
-/sc:do build markdown to PDF      → /sc:launch "build markdown to PDF" (พร้อม Discovery Interview)
-/sc:do ทำใหม่ phase BUILD         → /sc:replay BUILD
+/solomon-agent:do ดู status ปัจจุบัน        → /solomon-agent:status
+/solomon-agent:do ต่อจากที่หยุด              → /solomon-agent:resume
+/solomon-agent:do หา design เรื่อง auth     → /solomon-agent:kb auth
+/solomon-agent:do owner ค้างมา 10 นาที       → /solomon-agent:failover
+/solomon-agent:do build markdown to PDF      → /solomon-agent:launch "build markdown to PDF" (พร้อม Discovery Interview)
+/solomon-agent:do ทำใหม่ phase BUILD         → /solomon-agent:replay BUILD
 ```
 
 **Bypass:**
-- `/sc:do --raw <text>` → ส่งตรงไม่ classify
-- `/sc:do --plan <text>` → dry-run (แสดง routing decision ก่อน confirm)
-- `/sc:do --help` → ดู help
+- `/solomon-agent:do --raw <text>` → ส่งตรงไม่ classify
+- `/solomon-agent:do --plan <text>` → dry-run (แสดง routing decision ก่อน confirm)
+- `/solomon-agent:do --help` → ดู help
 
 Pure additive layer — ไม่กระทบกับ 12 command เดิม per [`commands/do.md`](commands/do.md) + [`skills/intent-router/SKILL.md`](skills/intent-router/SKILL.md)
 
@@ -296,10 +296,10 @@ Pure additive layer — ไม่กระทบกับ 12 command เดิ�
 
 - **Checkpoint บ่อย:** ทุก role return, phase exit, feature complete, escalation, interview round, heartbeat 15 นาที — เขียน `state/checkpoints/{ulid}-{phase}-{trigger}.json` + อัปเดต `state/role-state-board.json` (per [`rules/handoff-checkpoint-protocol.md`](rules/handoff-checkpoint-protocol.md))
 - **Role broadcast:** ทุก role อ่าน `state/role-state-board.json` ก่อนเริ่มงาน → ถ้า `active_role != ตัวเอง` → reply "[BROADCAST] Standing by ..." แล้วยุติ (กัน role กระโดดทำก่อนถึงคิว)
-- **Resume:** `/sc:resume` อ่าน 3 sources of truth (board + checkpoint + artifacts) → re-dispatch จากจุดที่หยุด (idempotent)
+- **Resume:** `/solomon-agent:resume` อ่าน 3 sources of truth (board + checkpoint + artifacts) → re-dispatch จากจุดที่หยุด (idempotent)
 - **Codemap auto-rebuild:** ทุก feature_complete + phase_exit → `scripts/build-codemap.mjs` → สร้าง `docs/codemap/index.md` + `by-module/*` + `entry-points.md` + `manifest.json` (per [`rules/codemap-protocol.md`](rules/codemap-protocol.md))
 - **KB auto-rebuild:** เช่นกัน → `scripts/build-kb-index.mjs` → สร้าง `docs/kb/index.md` + `by-phase/*` + `by-role/*` + `by-type/*` + `decisions.md` + `risks.md` + `glossary.md` + `search-index.json` (per [`rules/knowledge-base-protocol.md`](rules/knowledge-base-protocol.md))
-- **Manual:** `/sc:codemap` (view/rebuild code TOC), `/sc:kb <query>` (search artifacts)
+- **Manual:** `/solomon-agent:codemap` (view/rebuild code TOC), `/solomon-agent:kb <query>` (search artifacts)
 
 **Bypass (ไม่แนะนำ):** `sc.config.json: {"checkpoint": {"heartbeat_min": 0, "skip_role_return": true}}` — แต่ phase_exit + feature_complete + escalation_emitted ห้าม disable
 
@@ -321,7 +321,7 @@ Pure additive layer — ไม่กระทบกับ 12 command เดิ�
 
 ## ⚠️ ข้อจำกัด v0.1 (จำให้ได้)
 
-- ❌ ไม่มี automatic owner liveness — ต้องเรียก `/sc:failover` เอง
+- ❌ ไม่มี automatic owner liveness — ต้องเรียก `/solomon-agent:failover` เอง
 - ❌ Determinism = structural เท่านั้น
 - ❌ Budget tracking อาจเป็น char-heuristic
 - ❌ Write-path enforcement = best-effort (LLM มี FS access)
@@ -341,4 +341,4 @@ Pure additive layer — ไม่กระทบกับ 12 command เดิ�
 
 ---
 
-`/sc:launch "เริ่มเลย!"` 🚀
+`/solomon-agent:launch "เริ่มเลย!"` 🚀

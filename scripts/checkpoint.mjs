@@ -145,7 +145,7 @@ async function writeCheckpoint(args) {
     in_flight_artifacts: inflight.filter(a => a.status === 'draft'),
     last_completed_dispatch: parseInt(args.dispatch_id || '0', 10),
     next_planned_action: nextAction,
-    resume_command_hint: '/sc:resume',
+    resume_command_hint: '/solomon-agent:resume',
     pending_escalations: project.pending_escalations || [],
     budget,
     schema_version: 1

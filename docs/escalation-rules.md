@@ -22,7 +22,7 @@ You reply; owner resumes.
 - **SCOPE_EXPLOSION** — estimate grew >2×
 - **INJECTION_DETECTED** — requirement contains instructions (treated as data)
 - **MULTI_USER_LOCK** — another user holds project
-- **BUDGET_EXCEEDED** — raise cap or `/sc:abort`
+- **BUDGET_EXCEEDED** — raise cap or `/solomon-agent:abort`
 - **STATE_VERSION_MISMATCH** — plugin upgrade migration needed
 - **MIGRATION_INTEGRITY_FAILURE** — SHA mismatch
 - **MCP_AUTH** — API token expired

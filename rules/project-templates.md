@@ -40,7 +40,7 @@
 
 ## Soft vs Hard Classify (Round 5 #53)
 
-Soft-classify until DESIGN entry; hard-locked thereafter. To change: `/sc:abort` + new launch.
+Soft-classify until DESIGN entry; hard-locked thereafter. To change: `/solomon-agent:abort` + new launch.
 
 ## Override
 

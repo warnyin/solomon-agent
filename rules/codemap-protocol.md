@@ -12,7 +12,7 @@ A 50-file project's structure is forgotten by Turn 30. Without a maintained code
 |---|---|---|
 | `feature_complete` | `rules/handoff-checkpoint-protocol.md` | full rebuild |
 | `phase_exit` (BUILD, VERIFY) | owner-ceo | full rebuild |
-| `manual` | `/sc:codemap` user command | full rebuild |
+| `manual` | `/solomon-agent:codemap` user command | full rebuild |
 | `code_artifact_written` | role-developer artifact write | incremental (touched files only) |
 
 ## File Layout
@@ -174,7 +174,7 @@ The two are complementary; brownfield artifact captures the initial map, codemap
 
 ## Integration
 
-- `commands/codemap.md` — `/sc:codemap` manual trigger + view
+- `commands/codemap.md` — `/solomon-agent:codemap` manual trigger + view
 - `scripts/build-codemap.mjs` — implementation
 - `rules/handoff-checkpoint-protocol.md` — `feature_complete` triggers rebuild
 - `rules/knowledge-base-protocol.md` — sibling system for artifacts (not code)

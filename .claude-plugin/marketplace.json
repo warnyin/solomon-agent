@@ -8,7 +8,7 @@
     {
       "name": "solomon-agent",
       "source": "./",
-      "description": "Solomon Agent — one slash command summons a 10-role virtual company. Autonomous DISCOVERY→HANDOFF lifecycle, per-role sign-off gates, resumable checkpoints after session drop, natural-language /sc:do router.",
+      "description": "Solomon Agent — one slash command summons a 10-role virtual company. Autonomous DISCOVERY→HANDOFF lifecycle, per-role sign-off gates, resumable checkpoints after session drop, natural-language /solomon-agent:do router.",
       "version": "0.1.0"
     }
   ]

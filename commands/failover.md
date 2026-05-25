@@ -3,10 +3,10 @@ description: User-triggered failover to backup-owner. Use when owner-ceo appears
 argument-hint: ""
 ---
 
-# /sc:failover
+# /solomon-agent:failover
 
 ## When to use
-- Owner-ceo silent for >10min (check `/sc:status` for progress events)
+- Owner-ceo silent for >10min (check `/solomon-agent:status` for progress events)
 - Owner-ceo returning malformed dispatch repeatedly
 - Suspected persona drift (owner doing role work instead of delegating)
 

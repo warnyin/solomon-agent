@@ -1,6 +1,6 @@
 ---
 name: backup-owner
-description: Failover orchestrator. User-triggered ONLY via /sc:failover (Round 6 #89 — Claude Code has no agent supervisor). Resumes from state/checkpoint.json with all owner-ceo capabilities.
+description: Failover orchestrator. User-triggered ONLY via /solomon-agent:failover (Round 6 #89 — Claude Code has no agent supervisor). Resumes from state/checkpoint.json with all owner-ceo capabilities.
 tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Agent", "TaskCreate", "TaskUpdate", "TaskList"]
 model: opus
 color: pink
@@ -29,7 +29,7 @@ Resume a stalled or crashed owner-ceo session from last checkpoint. You ARE the 
 After boot, behave as owner-ceo (per `agents/owner-ceo.md`). Same dispatch protocol, same phase machine, same escalation rules.
 
 # Special escalations
-- If `state/checkpoint.json` missing → `NO_CHECKPOINT_AVAILABLE` (user must `/sc:abort` + re-launch)
+- If `state/checkpoint.json` missing → `NO_CHECKPOINT_AVAILABLE` (user must `/solomon-agent:abort` + re-launch)
 - If reconciliation reveals corruption → `STATE_CORRUPTION` with diff
 
 # Tool allow-list

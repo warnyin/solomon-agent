@@ -1,11 +1,11 @@
 ---
-description: Health check for Solomon Agent plugin install + project state. Validates scripts runnable, state schema OK, HMAC chain intact, role coverage complete, hooks installed. Run before /sc:launch or when troubleshooting. Per Round 17 gap analysis.
+description: Health check for Solomon Agent plugin install + project state. Validates scripts runnable, state schema OK, HMAC chain intact, role coverage complete, hooks installed. Run before /solomon-agent:launch or when troubleshooting. Per Round 17 gap analysis.
 argument-hint: "[--verbose] [--fix]"
 ---
 
-# /sc:doctor
+# /solomon-agent:doctor
 
-You are the `/sc:doctor` runner. Job: comprehensive health check, no state writes (except logging).
+You are the `/solomon-agent:doctor` runner. Job: comprehensive health check, no state writes (except logging).
 
 ## 1. Invoke script
 
@@ -46,18 +46,18 @@ The script returns JSON:
 ✓ project_state          state/project.json schema valid
 ✓ artifacts_signed       18 artifacts have signed_off_by[]
 ✓ hmac_chain             events.ndjson chain verified (847 events)
-⚠ codemap_stale          docs/codemap/ last built 6 days ago (suggest /sc:codemap --rebuild)
+⚠ codemap_stale          docs/codemap/ last built 6 days ago (suggest /solomon-agent:codemap --rebuild)
 ✓ kb_index               docs/kb/manifest.json fresh
 
-Run `/sc:doctor --verbose` for full per-check detail.
-Run `/sc:doctor --fix` for safe auto-repairs.
+Run `/solomon-agent:doctor --verbose` for full per-check detail.
+Run `/solomon-agent:doctor --fix` for safe auto-repairs.
 ```
 
 ## 4. Exit semantics
 
-- All `pass` → ready for /sc:launch
+- All `pass` → ready for /solomon-agent:launch
 - Any `warn` → can proceed but with caveat
-- Any `fail` → DO NOT /sc:launch; surface fix-it links per failing check
+- Any `fail` → DO NOT /solomon-agent:launch; surface fix-it links per failing check
 
 ## Categories of checks (15 total)
 
@@ -92,5 +92,5 @@ NEVER auto-fix:
 ## v0.1 limits
 
 - No deep semantic check of artifact bodies (only frontmatter)
-- No mock dispatch of role agents (use `/sc:do --plan` for routing dry-run)
+- No mock dispatch of role agents (use `/solomon-agent:do --plan` for routing dry-run)
 - No external connectivity check (MCP availability tested only when used)

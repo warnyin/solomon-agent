@@ -1,7 +1,7 @@
 {
   "name": "solomon-agent",
   "version": "0.1.0",
-  "description": "Solomon Agent turns a single slash command into a 10-agent virtual company. The CEO orchestrator runs DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF lifecycle autonomously — dispatching PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, and Service Desk in parallel, enforcing per-role sign-off gates, checkpointing every hand-off so any operator can resume mid-flight, auto-building a searchable code map + knowledge base, and routing natural-language intent via /sc:do. Born from the wisdom of Solomon — convene the council, ship the verdict.",
+  "description": "Solomon Agent turns a single slash command into a 10-agent virtual company. The CEO orchestrator runs DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF lifecycle autonomously — dispatching PM, BA, SA, Tech Lead, Developer, QA, DevSecOps, Security, Infra, and Service Desk in parallel, enforcing per-role sign-off gates, checkpointing every hand-off so any operator can resume mid-flight, auto-building a searchable code map + knowledge base, and routing natural-language intent via /solomon-agent:do. Born from the wisdom of Solomon — convene the council, ship the verdict.",
   "author": {
     "name": "ArmLazySong",
     "email": "arm.lazy.song@gmail.com"

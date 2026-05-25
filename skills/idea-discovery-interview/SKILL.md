@@ -1,5 +1,5 @@
 ---
-description: Human-like deep idea-probing interview owner-ceo runs IMMEDIATELY on /sc:launch BEFORE any role dispatch. Doubts every assumption, asks 5-Whys + Premortem + Inverse + Stakeholder + Reference triangulation, fills discovery-brief.md until confidence ≥ 0.85 or user explicitly says "go". Prevents downstream rework by forcing clarity at intake.
+description: Human-like deep idea-probing interview owner-ceo runs IMMEDIATELY on /solomon-agent:launch BEFORE any role dispatch. Doubts every assumption, asks 5-Whys + Premortem + Inverse + Stakeholder + Reference triangulation, fills discovery-brief.md until confidence ≥ 0.85 or user explicitly says "go". Prevents downstream rework by forcing clarity at intake.
 ---
 
 # Skill: idea-discovery-interview
@@ -8,8 +8,8 @@ description: Human-like deep idea-probing interview owner-ceo runs IMMEDIATELY o
 
 ## When to invoke
 
-- IMMEDIATELY on `/sc:launch <idea>` (first owner-ceo turn, before any role dispatch)
-- When user injects new scope via `/sc:inject` that materially changes the brief
+- IMMEDIATELY on `/solomon-agent:launch <idea>` (first owner-ceo turn, before any role dispatch)
+- When user injects new scope via `/solomon-agent:inject` that materially changes the brief
 - When any role returns `## Needs-Input: type=CLARIFY` that the owner cannot resolve from the brief
 
 ## Why
@@ -139,7 +139,7 @@ The brief is the single source of truth that role-pm / role-ba read at DISCOVERY
 
 ## Example Opening Turn
 
-User typed: `/sc:launch "build a SaaS appointment app for Thai barbershops"`
+User typed: `/solomon-agent:launch "build a SaaS appointment app for Thai barbershops"`
 
 Owner replies (NOT dispatching any role yet):
 
