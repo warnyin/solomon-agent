@@ -4,6 +4,7 @@
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { promises as fs, constants as FS } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 
 const SC_DIR_NAME = '.claude';
 const PLUGIN_KEY = 'plugins/sc';
@@ -41,8 +42,7 @@ export async function initGlobalStats() {
   }, null, 2), { mode: 0o600 });
 }
 
-const thisFile = `file://${process.argv[1].replace(/\\/g, '/')}`;
-if (import.meta.url === thisFile) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const flag = process.argv[2];
   const r = {
     '--home': homeDir,

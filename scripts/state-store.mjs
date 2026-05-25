@@ -7,6 +7,7 @@ import { promises as fs, constants as FS } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { createHmac, randomBytes } from 'node:crypto';
 import { hostname, userInfo } from 'node:os';
+import { pathToFileURL } from 'node:url';
 
 const STATE_DIR = process.env.SC_STATE_DIR || 'state';
 const ARTIFACTS_DIR = join(STATE_DIR, 'artifacts');
@@ -231,8 +232,10 @@ export function registerCleanup() {
 }
 
 // --- CLI entrypoint (so launch.md can shell out) ---
-const thisFile = `file://${process.argv[1].replace(/\\/g, '/')}`;
-if (import.meta.url === thisFile) {
+// Use pathToFileURL — manual `file://${argv}` produces 2 slashes on Windows
+// while import.meta.url uses 3, so the comparison silently fails and the
+// CLI block is skipped (exit 0 with no init).
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   registerCleanup();
   const [, , cmd, ...args] = process.argv;
   const opts = Object.fromEntries(

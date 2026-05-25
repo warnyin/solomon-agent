@@ -2,6 +2,7 @@
 // scripts/lib/ulid.mjs — standalone ULID generator (CLI + ESM).
 
 import { randomBytes } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
@@ -18,7 +19,6 @@ export function ulid() {
   return s;
 }
 
-const thisFile = `file://${process.argv[1].replace(/\\/g, '/')}`;
-if (import.meta.url === thisFile) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   process.stdout.write(ulid());
 }

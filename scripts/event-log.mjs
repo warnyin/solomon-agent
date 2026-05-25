@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // scripts/event-log.mjs — Round 4 #6.
 import { logEvent } from './state-store.mjs';
+import { pathToFileURL } from 'node:url';
 
-const thisFile = `file://${process.argv[1].replace(/\\/g, '/')}`;
-if (import.meta.url === thisFile) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , type, ...rest] = process.argv;
   if (!type) { console.error('usage: event-log.mjs <type> [k=v ...]'); process.exit(1); }
   const data = Object.fromEntries(rest.map((kv) => {
