@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-26
+
+### TL;DR
+
+First public release. Solomon Agent turns a single `/solomon-agent:launch` into a 10-role virtual company that runs DISCOVERY → DESIGN → BUILD → VERIFY → HANDOFF autonomously. Ships with 10 role agents (PM/BA/SA/TL/Dev/QA/DevSecOps/Security/Infra/ServiceDesk) + CEO orchestrator + backup-owner failover, 14 `/solomon-agent:*` commands, 8 cognitive skills, 23 protocol rules, per-role sign-off gates, resumable hand-off checkpoints, HMAC-chained event log, KB + codemap auto-build, pre-flight + mid-flight + retrospective cost transparency, doctor health check, and a dry-run harness. Built across 20 audit rounds, 137 files. Cross-platform (Linux/macOS/Windows) and bilingual (EN + TH) docs.
+
 ### Added (Round 20 — Extender Cookbooks)
 - `docs/extending-add-role.md` — 7-step cookbook for adding a new role agent
 - `docs/extending-add-command.md` — 5-step cookbook for adding a `/solomon-agent:*` command
@@ -74,6 +80,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HMAC chain event log + atomic-rename writes + path-traversal guards
 - PRP plan with 110 closed gaps across 9 rounds of audit (see `.claude/PRPs/plans/meta-agent-orchestrator.plan.md`)
 
-## [0.1.0] — TBD
-
-First public release.
