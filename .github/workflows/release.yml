@@ -41,7 +41,7 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/v}"
           node -e "
             const txt = require('fs').readFileSync('CHANGELOG.md', 'utf8');
-            const m = txt.match(new RegExp('## \\\\[$TAG\\\\][^\\n]*\\n([\\\\s\\\\S]*?)(?=\\n## |\\\\Z)'));
+            const m = txt.match(new RegExp('## \\\\[$TAG\\\\][^\\n]*\\n([\\\\s\\\\S]*?)(?=\\n## |\$)'));
             require('fs').writeFileSync('/tmp/release-notes.md', m ? m[1].trim() : 'No entry in CHANGELOG.md');
           "
 
