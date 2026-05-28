@@ -9,7 +9,8 @@ const RULES = {
 };
 
 function parseFrontmatter(text) {
-  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  const norm = text.replace(/\r\n/g, '\n');
+  const m = norm.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return null;
   const fm = {};
   for (const line of m[1].split('\n')) {
