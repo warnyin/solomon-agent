@@ -79,6 +79,51 @@ When the consultant returns `defer_to_user: true`, low-confidence, or safety-rej
 | `/solomon-agent:status` invoked | flush all pending |
 | Idle dispatch-stack >= 1min | flush all pending |
 
+### Defer Batch Persistence
+
+Owner-ceo persists pending defers in `state/defer-batch.json` so they survive session crashes mid-batch. Atomic-rename writes (per `scripts/state-store.mjs` convention).
+
+```json
+{
+  "schema_version": 1,
+  "project_id": "01H_SYNTHETIC_PROJECT",
+  "updated_at": "2026-05-28T10:42:00Z",
+  "last_flush_at": "2026-05-28T10:38:00Z",
+  "flushed_count_lifetime": 17,
+  "pending": [
+    {
+      "question_id": "ni_01H_QULID",
+      "question_text": "Target DAU at launch?",
+      "asking_role": "role-pm",
+      "phase": "DISCOVERY",
+      "question_class": "business",
+      "added_at": "2026-05-28T10:40:00Z",
+      "consultant_attempt": {
+        "answer": "50-200 users based on SMB barbershop norms",
+        "confidence": 0.55,
+        "provenance": { "brief": [], "extrapolation": ["barbershop industry norm"], "inference": [] },
+        "caveats": ["range depends on chain vs single shop"],
+        "defer_to_user": true
+      }
+    }
+  ]
+}
+```
+
+**Lifecycle:**
+
+| Event | Effect on file |
+|---|---|
+| New defer item | Append to `pending[]`; bump `updated_at`; atomic-rewrite |
+| Flush triggered (per §Defer Batch table above) | Emit `[BLUE] CONSULTANT-DEFER`; on user reply, remove resolved items from `pending[]`; bump `flushed_count_lifetime`; update `last_flush_at` |
+| User skips item (reply `qN=skip`) | Remove from `pending[]`; item is gone (NOT re-queued); log `defer_skipped_by_user` event |
+| Session crash mid-flush | On resume, owner reads `pending[]`; surfaces any unanswered items as `[BLUE] CONSULTANT-DEFER (resumed)` block |
+| `/solomon-agent:replay <phase>` | Cascade-supersede per `rules/rollback-protocol.md`: items where `phase` ∈ replayed-phase are removed (questions belong to a now-discarded artifact) |
+
+**File location:** `state/defer-batch.json` (singleton per project; not ULID-prefixed). Read ACL: owner-ceo only. Write ACL: owner-ceo only.
+
+**Cap:** If `pending[].length > 50` (runaway), owner emits `[YELLOW] ESCALATION` with `consultant_layer_overrun` and forces a flush.
+
 ### Consultant Anti-Loop
 
 | Trigger | Action |

@@ -122,11 +122,24 @@ Return JSON per your agent file's Output Contract.
 `})
 ```
 
-4. Parse the JSON return. For each answer apply the Fall-Through Rule from `rules/needs-input-protocol.md §Owner Fall-Through Rule`:
+4. **Lint consultant's JSON return** via Bash BEFORE parsing for fall-through:
+
+```bash
+# Extract the fenced JSON block from consultant's reply (last ```json ... ``` block)
+# and pipe to the linter. Capture exit code.
+echo "$consultant_json" | node "${CLAUDE_PLUGIN_ROOT}/scripts/lint-consultant-output.mjs"
+LINT_CODE=$?
+```
+
+   - `LINT_CODE == 0` → proceed to step 5
+   - `LINT_CODE == 1` (schema violation, e.g. zero-anchor or confidence-cap breach) → log event `consultant_malformed`; this counts as the 1st violation for this batch's question_ids; if this is the 1st violation: re-dispatch consultant once with a schema-reminder prompt (per `rules/needs-input-protocol.md §Consultant Anti-Loop`); if the 2nd violation: defer all questions in batch to user with reason `lint failed twice`
+   - `LINT_CODE == 2` (unreadable / not JSON at all) → log event `consultant_malformed` with subtype `not_json`; same retry-then-defer logic as exit 1
+
+5. Apply the Fall-Through Rule from `rules/needs-input-protocol.md §Owner Fall-Through Rule` for each answer:
    - Accepted → re-dispatch asking role with answer + `## Provenance` footer (cite brief paths / extrapolation / inference) so the role's artifact can carry audit trail
    - Deferred → append to defer batch with consultant's attempt as context
 
-5. On flush of defer batch, surface to user:
+6. On flush of defer batch, surface to user:
 
 ```
 [BLUE] CONSULTANT-DEFER — N question(s) need your input
@@ -141,7 +154,9 @@ Q1 (asked by <role>, phase=<phase>)
 Reply with: q1=accept q2="..." q3=skip   (or free-form)
 ```
 
-6. Apply Consultant Anti-Loop rules from `rules/needs-input-protocol.md §Consultant Anti-Loop` before every dispatch (max 2 dispatches per question_id, retry-on-malformed once, etc.).
+   Defer batch buffer lives in `state/defer-batch.json` (schema in `rules/needs-input-protocol.md §Defer Batch Persistence`). Persisted via atomic-rename so it survives mid-batch session crashes.
+
+7. Apply Consultant Anti-Loop rules from `rules/needs-input-protocol.md §Consultant Anti-Loop` before every dispatch (max 2 dispatches per question_id, retry-on-malformed once, etc.).
 
 ## Material-Pivot Rebuild (deferred for full implementation)
 

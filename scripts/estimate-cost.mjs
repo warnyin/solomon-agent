@@ -99,6 +99,17 @@ function estimate(goal, projectType, features) {
   const totalTokens = (features * featureTokens) + interviewOverhead;
   const totalUsd = (totalTokens / 1_000_000) * USD_PER_M_TOKEN;
 
+  // Consultant overhead (per design/consultant-feature.md Q10):
+  // - One-shot builder + peer-review: ~10k tokens (strictness multiplier already
+  //   covers the peer-review dispatch via existing role-strictness-protocol).
+  // - Per-phase batched answers: ~15k tokens × complexityMult, across 5 standard
+  //   phases (DISCOVERY/DESIGN/BUILD/VERIFY/HANDOFF). This is a coarse heuristic;
+  //   actual usage depends on how many CLARIFY Needs-Input each role emits.
+  const consultantBuilderTokens = 10_000;
+  const consultantPerPhase = Math.round(15_000 * complexityMult);
+  const consultantTokens = consultantBuilderTokens + (5 * consultantPerPhase);
+  const consultantUsd = (consultantTokens / 1_000_000) * USD_PER_M_TOKEN;
+
   return {
     expected_tokens: Math.round(totalTokens),
     expected_usd: parseFloat(totalUsd.toFixed(2)),
@@ -107,6 +118,8 @@ function estimate(goal, projectType, features) {
       mid:  parseFloat(totalUsd.toFixed(2)),
       high: parseFloat((totalUsd * 3.0).toFixed(2)),
     },
+    consultant_estimate_tokens: consultantTokens,
+    consultant_estimate_usd: parseFloat(consultantUsd.toFixed(2)),
     complexity,
     project_type: projectType,
   };
@@ -135,6 +148,8 @@ async function main() {
     expected_usd: est.expected_usd,
     confidence: features === 1 ? 'med' : 'low',
     bands: est.bands,
+    consultant_estimate_tokens: est.consultant_estimate_tokens,
+    consultant_estimate_usd: est.consultant_estimate_usd,
     based_on: 'heuristic-v1',
     memory_calibration_samples: 0,
     schema_version: 1,
@@ -149,6 +164,7 @@ async function main() {
   console.log(`  Goal:       "${args.goal.slice(0, 80)}${args.goal.length > 80 ? '...' : ''}"`);
   console.log(`  Complexity: ${est.complexity} · type: ${est.project_type} · features: ${features}`);
   console.log(`  Expected:   ~${(est.expected_tokens / 1000).toFixed(0)}k tokens (~$${est.expected_usd})`);
+  console.log(`  Consultant: +~${(est.consultant_estimate_tokens / 1000).toFixed(0)}k tokens (~$${est.consultant_estimate_usd}) for persona build + per-phase Q&A`);
   console.log(`  Range:      $${est.bands.low} (lucky) — $${est.bands.high} (rough) with 80% confidence`);
   console.log(`  Based on:   heuristic-v1 (0 memory samples — v0.2 will use MCP)`);
   console.log(``);

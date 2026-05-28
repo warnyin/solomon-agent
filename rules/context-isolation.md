@@ -83,6 +83,28 @@ role-service-desk:
   - "state/artifacts/**"
   - "rules/**"
   - "docs/**"
+
+role-consultant:
+  # Answerer — tightest read scope in the system. Reads only its own persona
+  # and the brief it was built from. Cannot inspect role artifacts (that's owner's job).
+  - "state/artifacts/consultant-profile.md"
+  - "state/artifacts/discovery-brief.md"
+  - "state/artifacts/confidence.json"
+  - "rules/role-charters.md"
+  - "rules/needs-input-protocol.md"
+
+role-consultant-builder:
+  # Persona generator — reads brief + confidence + (patch|rebuild) prev profile.
+  # Writes consultant-profile.md (write-side not guarded here per scripts/guard-isolation.mjs scope).
+  - "state/artifacts/discovery-brief.md"
+  - "state/artifacts/confidence.json"
+  - "state/artifacts/consultant-profile.md"
+  - "rules/role-charters.md"
+  - "rules/escalation.md"
+  - "rules/project-templates.md"
+  - "templates/role-verification-checklists.md"
+  - "design/consultant-feature.md"
+  - "state/project.json"
 ```
 
 ## Path Traversal Rules (Round 5 #27)
