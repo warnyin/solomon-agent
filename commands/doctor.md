@@ -59,7 +59,7 @@ Run `/solomon-agent:doctor --fix` for safe auto-repairs.
 - Any `warn` → can proceed but with caveat
 - Any `fail` → DO NOT /solomon-agent:launch; surface fix-it links per failing check
 
-## Categories of checks (15 total)
+## Categories of checks (17 total)
 
 1. **node_version** — `>= 18` (per `package.json:engines.node`)
 2. **plugin_manifest** — `.claude-plugin/plugin.json` valid + version matches `package.json`
@@ -68,14 +68,16 @@ Run `/solomon-agent:doctor --fix` for safe auto-repairs.
 5. **hook_schema** — `hooks/hooks.json` uses nested `{event:[{matcher,hooks:[{...}]}]}` format
 6. **rules_present** — all expected rules files exist (per `agents/manifest.json:rules[]`)
 7. **commands_present** — count matches manifest
-8. **agents_present** — 10 roles + owner-ceo + backup-owner
+8. **agents_present** — 10 roles + owner-ceo + backup-owner (+ role-consultant + role-consultant-builder if consultant feature enabled)
 9. **skills_present** — every skill referenced in rules has `SKILL.md`
 10. **templates_present** — checklists + handoff-card + discovery-brief + codemap + kb-index
 11. **project_state** — `state/project.json` schema valid (if exists)
 12. **artifacts_signed** — every approved artifact has `signed_off_by[level:self]+[level:peer]`
-13. **hmac_chain** — `node scripts/verify-log.mjs` clean
-14. **codemap_stale** — warn if `docs/codemap/manifest.json:built_at` older than 7 days
-15. **kb_index** — `docs/kb/manifest.json` fresh
+13. **consultant_profile_freshness** (Consultant Layer) — warns if `state/artifacts/discovery-brief.md` mtime is newer than `state/artifacts/consultant-profile.md` mtime; signals `mode=patch` or `CONSULTANT_REBUILD_REQUIRED` is overdue. Passes if neither file exists (pre-DISCOVERY) OR if profile is up-to-date.
+14. **consultant_acls_present** (Consultant Layer) — verifies `state/role-acls.json` contains both `role-consultant` and `role-consultant-builder` entries (auto-emitted by `scripts/state-store.mjs init` since the consultant feature shipped; may be missing on legacy projects — run migration `0.1.0-to-consultant`).
+15. **hmac_chain** — `node scripts/verify-log.mjs` clean
+16. **codemap_stale** — warn if `docs/codemap/manifest.json:built_at` older than 7 days
+17. **kb_index** — `docs/kb/manifest.json` fresh
 
 ## Safe auto-fixes (`--fix`)
 

@@ -21,6 +21,12 @@ state/lock
 state/abort.flag
 state/inbox.md
 state/hook-errors.log
+state/cost-estimate.json
+state/burn-rate.ndjson
+state/defer-batch.json
+state/consultant-dispatches/
+state/checkpoints/
+state/role-state-board.json
 state/artifacts/
 state/archive/
 

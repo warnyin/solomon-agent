@@ -54,15 +54,16 @@ Born from 20 rounds of audit (110 closed gaps + 5 strategic gaps) — battle-spe
 | | Feature | What it does |
 |---|---|---|
 | 🎤 | **Discovery Interview** | Owner-CEO asks 3-5 clustered questions per round (up to 5 rounds) covering 10 dimensions before any role is dispatched — kills downstream rework |
+| 🧑‍💼 | **Professional Consultant Agent** | After the interview, a per-project consultant persona is synthesized from the brief. Role agents route `## Needs-Input: type=CLARIFY` through it (batched up to 5, mandatory provenance + confidence + defer flag); deep questions get answered by a domain-grounded persona instead of always interrupting the user. See `design/consultant-feature.md`. |
 | 🏛️ | **10-Role Virtual Company** | PM / BA / SA / Tech Lead / Developer / QA / DevSecOps / Security / Infra / Service Desk — each with charter, anti-scope, and verification checklist |
 | ✅ | **Sign-Off Gates** | Every artifact: self-verify → peer review → owner phase-exit; safety-class artifacts get adversarial review too. Nothing ships unverified |
 | 🧠 | **Creative + Security Mindset** | Rule of 3 (≥ 3 alternatives) + STRIDE-on-everything + assume-hostile-input + fail-closed + least-privilege + no-secrets-in-text |
-| 💾 | **Resumable Checkpoints** | 6 triggers — role return / phase exit / feature complete / escalation / interview round / 15-min heartbeat. `/solomon-agent:resume` continues from latest |
+| 💾 | **Resumable Checkpoints** | 7 triggers — role return / phase exit / feature complete / escalation / interview round / 15-min heartbeat / consultant built. `/solomon-agent:resume` continues from latest |
 | 📚 | **Auto Knowledge Base** | Every artifact indexed in `docs/kb/` by phase / role / type / feature + decisions / risks / glossary + full-text search via `/solomon-agent:kb <query>` |
 | 🗺️ | **Auto Codemap** | `docs/codemap/` rebuilt on every feature complete — modules, entry points, dependencies, public APIs across 8+ languages |
 | 💰 | **Cost Transparency** | Pre-flight estimate (band: low—mid—high) → mid-flight burn alerts (50/80/95%) → per-feature retrospective with calibration |
 | 🎯 | **Meta-Command Router** | `/solomon-agent:do "anything in Thai or English"` — reads state, classifies intent, asks back if ambiguous, routes to the right command. One command to rule them all |
-| 🩺 | **Health Check** | `/solomon-agent:doctor` runs 15 checks (node version, manifests, scripts, hook schema, HMAC chain, role coverage, KB freshness) — pre-flight before launch |
+| 🩺 | **Health Check** | `/solomon-agent:doctor` runs 17 checks (node version, manifests, scripts, hook schema, HMAC chain, role coverage, KB freshness, consultant profile staleness + ACL presence) — pre-flight before launch |
 | 🔒 | **Defense in Depth** | HMAC chain on event log + atomic-rename writes + path-traversal guards + secret-pattern hooks + per-role ACLs |
 | 🌏 | **Bilingual UX** | All escalation prompts + interview questions + meta-router keywords work in Thai AND English |
 
