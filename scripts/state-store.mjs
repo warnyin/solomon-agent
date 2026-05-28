@@ -18,6 +18,7 @@ const SESSION_KEY_FILE = join(STATE_DIR, 'session.key');
 const LOCK_FILE = join(STATE_DIR, 'lock');
 const ABORT_FLAG = join(STATE_DIR, 'abort.flag');
 const STACK_FILE = join(STATE_DIR, 'dispatch-stack.json');
+const ROLE_ACLS_FILE = join(STATE_DIR, 'role-acls.json');
 
 const DEFAULT_BUDGET = {
   tokens_budget: 200000,
@@ -26,6 +27,116 @@ const DEFAULT_BUDGET = {
   per_role: {},
   soft_limit_pct: 80,
   hard_limit_pct: 100,
+  // Consultant bucket (per design/consultant-feature.md Q10).
+  // burn-rate-watch.mjs reads this; estimate-cost.mjs surfaces it pre-flight.
+  consultant: {
+    tokens_used: 0,
+    soft_limit_usd: 2.0,
+    hard_limit_usd: 5.0,
+    dispatches_this_phase: 0,
+    max_dispatches_per_phase: 10,
+  },
+};
+
+// Default read ACLs per role — mirrors rules/context-isolation.md.
+// guard-isolation.mjs enforces these at PreToolUse Read|Glob|Grep.
+// Owner widens via state/role-acls.json:temporary_grants[] at dispatch time.
+const DEFAULT_ROLE_ACLS = {
+  'owner-ceo': ['**/*'],
+  'backup-owner': ['**/*'],
+  'role-pm': [
+    'state/artifacts/*-discovery-pm-*.md',
+    'state/artifacts/*-discovery-ba-*.md',
+    'rules/role-charters.md',
+    'rules/escalation.md',
+    'state/project.json',
+    'state/bootstrap-summary.md',
+  ],
+  'role-ba': [
+    'state/artifacts/*-discovery-*.md',
+    'rules/role-charters.md',
+    'rules/project-templates.md',
+    'state/project.json',
+  ],
+  'role-sa': [
+    'state/artifacts/*-discovery-*.md',
+    'state/artifacts/*-design-*.md',
+    'rules/**/*.md',
+    'state/project.json',
+  ],
+  'role-tech-lead': [
+    'state/artifacts/*-discovery-*.md',
+    'state/artifacts/*-design-*.md',
+    'rules/**/*.md',
+    'state/project.json',
+    '**/*',
+  ],
+  'role-developer': [
+    'state/artifacts/*-design-*.md',
+    'state/artifacts/*-build-dev-*.md',
+    'state/artifacts/*-verify-qa-*.md',
+    'rules/role-charters.md',
+    'rules/external-tool-routing.md',
+    'src/**',
+    'test/**',
+    'tests/**',
+    '*.md',
+    'package.json',
+    'Cargo.toml',
+    'pyproject.toml',
+    'go.mod',
+  ],
+  'role-qa': [
+    'state/artifacts/*-design-*.md',
+    'state/artifacts/*-build-*.md',
+    'state/artifacts/*-verify-qa-*.md',
+    'src/**',
+    'test/**',
+    'tests/**',
+  ],
+  'role-devsecops': [
+    'state/artifacts/*-design-*.md',
+    'state/artifacts/*-verify-*.md',
+    'rules/role-charters.md',
+    '.github/**',
+    'Dockerfile',
+    '*.yml',
+    '*.yaml',
+  ],
+  'role-security': [
+    'state/artifacts/**',
+    'rules/escalation.md',
+    'rules/role-charters.md',
+    '**/*',
+  ],
+  'role-infra': [
+    'state/artifacts/*-design-*.md',
+    'rules/role-charters.md',
+  ],
+  'role-service-desk': [
+    'state/artifacts/**',
+    'rules/**',
+    'docs/**',
+  ],
+  // Per design/consultant-feature.md + rules/context-isolation.md (added in 91f20de).
+  'role-consultant': [
+    'state/artifacts/consultant-profile.md',
+    'state/artifacts/discovery-brief.md',
+    'state/artifacts/confidence.json',
+    'rules/role-charters.md',
+    'rules/needs-input-protocol.md',
+  ],
+  'role-consultant-builder': [
+    'state/artifacts/discovery-brief.md',
+    'state/artifacts/confidence.json',
+    'state/artifacts/consultant-profile.md',
+    'rules/role-charters.md',
+    'rules/escalation.md',
+    'rules/project-templates.md',
+    'templates/role-verification-checklists.md',
+    'design/consultant-feature.md',
+    'state/project.json',
+  ],
 };
 
 // --- ULID generator (compact, no deps) ---
@@ -113,6 +224,9 @@ export async function init({ goal, projectId, scVersion = '0.1.0' }) {
   }, null, 2));
   await atomicWrite(BUDGET_FILE, JSON.stringify(DEFAULT_BUDGET, null, 2));
   await atomicWrite(STACK_FILE, JSON.stringify({ stack: [] }, null, 2));
+  // Emit per-role read ACLs so guard-isolation.mjs can enforce from session start
+  // (per rules/context-isolation.md). Includes role-consultant + role-consultant-builder.
+  await atomicWrite(ROLE_ACLS_FILE, JSON.stringify(DEFAULT_ROLE_ACLS, null, 2));
   await acquireLock(id);
   await logEvent({ type: 'project_init', project_id: id, goal });
   return { id };

@@ -65,9 +65,19 @@ function sectionLines(fm, key) {
 }
 
 function countListItems(sectionBody) {
+  // Count only list items at the shallowest indent under the section header.
+  // The header itself is sectionBody[0] (e.g., "knowledge_frames:"); subsequent
+  // top-level list items are "  - ..." (2-space indent); nested ones are deeper.
+  // Without this guard, countListItems overcounts nested `- "field"` entries
+  // under `derived_from:` (or similar) and yields a too-large count.
+  let topIndent = null;
   let count = 0;
-  for (const l of sectionBody) {
-    if (/^\s{2,}-\s/.test(l)) count++;
+  for (let i = 1; i < sectionBody.length; i++) {
+    const m = sectionBody[i].match(/^( +)-\s/);
+    if (!m) continue;
+    const indent = m[1].length;
+    if (topIndent === null) topIndent = indent;
+    if (indent === topIndent) count++;
   }
   return count;
 }
