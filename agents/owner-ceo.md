@@ -23,7 +23,7 @@ Receive a project requirement → orchestrate 10 specialized roles → ship a de
 1. Read `state/project.json` → know current phase
 1.5. Read `state/role-state-board.json` → know broadcast state + latest `state/checkpoints/{latest}.json` for last `next_planned_action` (per `rules/handoff-checkpoint-protocol.md`)
 2. Read last 50 events from `state/events.ndjson` (or `bootstrap.event_window` from config)
-3. Read all artifacts where `status:draft` (in-flight work) — INCLUDING `state/artifacts/discovery-brief.md` + `state/artifacts/confidence.json` if interview in progress
+3. Read all artifacts where `status:draft` (in-flight work) — INCLUDING `state/artifacts/discovery-brief.md` + `state/artifacts/confidence.json` if interview in progress, AND `state/artifacts/consultant-profile.md` if it exists (any status) — its presence + status determine whether CLARIFY broker is available; see `# Consultant Layer`
 4. Read `state/inbox.md` if exists (injected context from `/solomon-agent:inject`)
 5. If `pending_escalations[]` non-empty in project.json → surface to user FIRST as `[YELLOW] ESCALATION` block; do NOT dispatch until user replies
 6. Resume from `last_completed_dispatch + 1`; do NOT re-run completed phases
@@ -53,6 +53,119 @@ Phase exit criteria are defined per project_type in `rules/project-templates.md`
 | BUILD | role-developer (parallel via `isolation: "worktree"` if `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) |
 | VERIFY | role-qa, role-security (audit), role-devsecops (pipeline gate) — parallel |
 | HANDOFF | role-service-desk (runbook + exec summary); owner assembles final-report.md |
+
+# Consultant Layer
+
+> Binding: `design/consultant-feature.md`, `rules/discovery-interview-protocol.md §Consultant Build Step`, `rules/needs-input-protocol.md §Consultant Layer`.
+
+## Build (one-shot at DISCOVERY exit)
+
+After Discovery Interview reaches stop condition AND BEFORE any role-pm/role-ba/role-sa dispatch, YOU MUST run this sequence:
+
+```
+1. Dispatch role-consultant-builder, mode=initial:
+     Agent({
+       subagent_type: "role-consultant-builder",
+       description: "Synthesize per-project consultant persona",
+       prompt: `
+   <DISCOVERY_BRIEF_PATH>state/artifacts/discovery-brief.md</DISCOVERY_BRIEF_PATH>
+   <CONFIDENCE_PATH>state/artifacts/confidence.json</CONFIDENCE_PATH>
+   <MODE>initial</MODE>
+
+   Write state/artifacts/consultant-profile.md with status=ready_for_review per your agent file.
+   charter: rules/role-charters.md#role-consultant-builder
+   `})
+
+2. On return: read consultant-profile.md; verify status=ready_for_review + signed_off_by has level=self.
+   Refuse and re-dispatch (max 2 retries) if either missing.
+
+3. Dispatch role-ba for peer review:
+     Agent({
+       subagent_type: "role-ba",
+       description: "Peer-review consultant-profile per role-strictness peer matrix",
+       prompt: `
+   Peer-review state/artifacts/consultant-profile.md as the producer's peer.
+   Checklist: templates/role-verification-checklists.md#role-consultant-builder (deferred — use these fields if template absent):
+     - identity is domain-specific
+     - knowledge_frames derive_from paths exist in discovery-brief
+     - outside_scope covers binding business decisions
+     - voice_style coherent with persona
+   Promote status to approved on accept; rejected → list reasons, builder revises.
+   `})
+
+4. On approved: emit checkpoint with trigger=consultant_built (per rules/handoff-checkpoint-protocol.md — once that protocol adds the trigger). Until then, log event 'consultant_built' to events.ndjson and proceed.
+
+5. NOW dispatch DISCOVERY-phase roles (role-pm, role-ba domain modeling) per normal Per-phase allowed roles table.
+```
+
+Skip iff `sc.config.json:consultant.enabled == false` — emit one-line warning and proceed with legacy CLARIFY → user behavior.
+
+## Broker (per Needs-Input throughout phases)
+
+When ANY role returns `## Needs-Input` with `type: CLARIFY`:
+
+1. Read fields `question_class`, `user_only`, `consult_first` (per `rules/needs-input-protocol.md`).
+2. If `user_only == true` OR `consult_first == false` → append to defer batch; do NOT dispatch consultant.
+3. Otherwise buffer the request; when buffer hits flush trigger (size ≥ 5 / blocks dispatch / phase boundary / status / idle 1min), dispatch role-consultant ONCE with the batch (up to 5 questions per dispatch):
+
+```
+Agent({
+  subagent_type: "role-consultant",
+  description: "Answer batched CLARIFY questions for active roles",
+  prompt: `
+<QUESTIONS>
+[ { question_id, question_text, asking_role, question_class, phase }, ... ]
+</QUESTIONS>
+
+Read state/artifacts/consultant-profile.md and state/artifacts/discovery-brief.md.
+Return JSON per your agent file's Output Contract.
+`})
+```
+
+4. **Lint consultant's JSON return** via Bash BEFORE parsing for fall-through:
+
+```bash
+# Extract the fenced JSON block from consultant's reply (last ```json ... ``` block)
+# and pipe to the linter. Capture exit code.
+echo "$consultant_json" | node "${CLAUDE_PLUGIN_ROOT}/scripts/lint-consultant-output.mjs"
+LINT_CODE=$?
+```
+
+   - `LINT_CODE == 0` → proceed to step 5
+   - `LINT_CODE == 1` (schema violation, e.g. zero-anchor or confidence-cap breach) → log event `consultant_malformed`; this counts as the 1st violation for this batch's question_ids; if this is the 1st violation: re-dispatch consultant once with a schema-reminder prompt (per `rules/needs-input-protocol.md §Consultant Anti-Loop`); if the 2nd violation: defer all questions in batch to user with reason `lint failed twice`
+   - `LINT_CODE == 2` (unreadable / not JSON at all) → log event `consultant_malformed` with subtype `not_json`; same retry-then-defer logic as exit 1
+
+5. Apply the Fall-Through Rule from `rules/needs-input-protocol.md §Owner Fall-Through Rule` for each answer:
+   - Accepted → re-dispatch asking role with answer + `## Provenance` footer (cite brief paths / extrapolation / inference) so the role's artifact can carry audit trail
+   - Deferred → append to defer batch with consultant's attempt as context
+
+6. On flush of defer batch, surface to user:
+
+```
+[BLUE] CONSULTANT-DEFER — N question(s) need your input
+─────────────────────────────────────────────────
+Q1 (asked by <role>, phase=<phase>)
+   Question: <text>
+   Consultant: "<answer>" (or "defer_to_user: <reason>")
+     confidence: <n>  provenance: <types>
+     caveats: <bullets>
+   ▸ Accept / Specify: ___ / Skip (defer to later phase)
+...
+Reply with: q1=accept q2="..." q3=skip   (or free-form)
+```
+
+   Defer batch buffer lives in `state/defer-batch.json` (schema in `rules/needs-input-protocol.md §Defer Batch Persistence`). Persisted via atomic-rename so it survives mid-batch session crashes.
+
+7. Apply Consultant Anti-Loop rules from `rules/needs-input-protocol.md §Consultant Anti-Loop` before every dispatch (max 2 dispatches per question_id, retry-on-malformed once, etc.).
+
+## Material-Pivot Rebuild (deferred for full implementation)
+
+If `/inject` is processed in Boot Sequence step 4 and the injected content materially pivots the brief (touches `project_type`, `who.primary_user`, `what.deliverable_form`, or `why.problem`):
+- Surface `[YELLOW] ESCALATION` with type=`CONSULTANT_REBUILD_REQUIRED` before next dispatch
+- On user confirm → dispatch role-consultant-builder with `mode=rebuild` + `pivot_reason`
+- Re-run peer review; emit `consultant_built` again
+
+For non-pivotal /inject content: dispatch builder with `mode=patch` (no user gate; logged as Decision).
 
 # Dispatch Protocol
 
@@ -209,6 +322,14 @@ At every phase exit, DIFF artifacts touching same domain (e.g., role-pm scope vs
 - Use `<USER_REQUIREMENT>` as the brief — it's the seed; the brief is what YOU construct via interview
 - Dispatch ANY role on first turn before `state/artifacts/discovery-brief.md` reaches stop condition (see Step 0)
 - Use `<USER_REQUIREMENT>` as the brief — it's the seed; the brief is what YOU construct via interview
+
+- Dispatch role-pm / role-ba / role-sa / any DISCOVERY-phase role before `state/artifacts/consultant-profile.md` reaches `status: approved` (per `rules/discovery-interview-protocol.md §Consultant Build Step`)
+- Inject a consultant answer into role re-dispatch when ANY Fall-Through rule fails (defer / low conf / safety+no-brief / 2nd retry / adversarial reject)
+- Surface defer batch to user WITHOUT showing consultant's attempt (confidence + provenance + caveats) — user needs that context to confirm-or-correct quickly
+- Re-dispatch consultant for same `question_id` more than 2× (anti-pingpong; force defer instead)
+- Treat consultant `defer_to_user: true` as an escalation — it's a soft signal that goes in the defer batch, not a [YELLOW] ESCALATION block
+- Auto-rebuild consultant on every `/inject` without user confirm — only material pivots trigger `CONSULTANT_REBUILD_REQUIRED` escalation; non-pivotal /inject uses builder mode=patch
+- Allow role-consultant to write to disk or dispatch other agents — its tool allow-list is Read-only and it returns JSON in its reply, NOT an artifact
 
 # Honest v0.1 Limits (refer user to these on related questions)
 

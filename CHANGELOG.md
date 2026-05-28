@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — Consultant Layer (per `design/consultant-feature.md`)
+
+A per-project "professional consultant" agent that absorbs the discovery brief and intercepts CLARIFY-type Needs-Input from roles, so deep questions get answered by a domain-grounded persona instead of interrupting the user every time. Built across 14 locked design decisions from a `/grill-me` session, then implemented as 3 atomic commits + one consolidation commit (state-store/doctor/CHANGELOG/tests).
+
+#### New agents
+- `agents/role-consultant.md` — Read-only batched answerer; mandatory provenance + confidence + `defer_to_user` contract; zero-anchor and confidence-cap guards baked into the prompt
+- `agents/role-consultant-builder.md` — One-shot persona synthesizer; modes `initial | patch | rebuild`; writes singleton `state/artifacts/consultant-profile.md` with YAML schema (identity, expertise, outside_scope, knowledge_frames, domain_analogs, voice_style + 200-300 word narrative body)
+
+#### New design doc
+- `design/consultant-feature.md` — Preserves all 14 design decisions, MVP scope, deferred-vs-shipped breakdown, return contract, owner fall-through rule, profile schema, risks & open follow-ups
+
+#### New scripts
+- `scripts/lint-consultant-profile.mjs` — Validate persona artifact against schema (required keys, list-size constraints, years_experience 8-20, narrative word count 200-300, mode-specific body sections, Handoff section); exit 0/1/2 like `lint-frontmatter.mjs`
+- `scripts/lint-consultant-output.mjs` — Validate JSON return contract from `role-consultant` (required answer fields, types, confidence range, provenance shape, zero-anchor + confidence-cap guards); reads stdin or file arg
+- `tests/scripts/lint-consultant-profile.spec.mjs`, `tests/scripts/lint-consultant-output.spec.mjs` — Node `--test` coverage of happy path + each guard
+
+#### Owner-ceo integration
+- New `# Consultant Layer` section in `agents/owner-ceo.md` with full build + broker flow including Bash hookup to `lint-consultant-output.mjs` (retry-then-defer on malformed)
+- Boot Sequence step 3 reads `consultant-profile.md` when present
+- Anti-Patterns extended with consultant-specific guardrails (no role dispatch before profile=approved, no answer injection on Fall-Through failure, no anti-pingpong loops, etc.)
+- Material-Pivot Rebuild section documents `/inject` → `CONSULTANT_REBUILD_REQUIRED` flow
+
+#### Protocol & charter additions
+- `rules/role-charters.md` — Charters for `role-consultant-builder` + `role-consultant` (color teal, model sonnet)
+- `rules/discovery-interview-protocol.md` — Binding Rule extended with second gate; new `§Consultant Build Step` documents build+peer-review sequence
+- `rules/needs-input-protocol.md` — Added optional fields `question_class`, `user_only`, `consult_first`; CLARIFY action matrix delegates to new `§Consultant Layer`; new `§Defer Batch` flush rules; new `§Defer Batch Persistence` (state/defer-batch.json schema with full lifecycle table); new `§Consultant Anti-Loop`; extended general anti-loop with `question_class` granularity
+- `rules/escalation.md` — `#16 CONSULTANT_REBUILD_REQUIRED` (relaxable), `#17 CONSULTANT_BUDGET_EXHAUSTED` (hard variant non-relaxable); relaxation policy lists updated
+- `rules/role-strictness-protocol.md` — Peer-Review Matrix row `role-consultant-builder → role-ba`; `§Adversarial Review` extended with per-answer consultant safety-class trigger
+- `rules/handoff-checkpoint-protocol.md` — 7th checkpoint trigger `consultant_built` (blocks DISCOVERY phase exit until written); new event in `§Events Emitted`
+- `rules/communication-protocol.md` — `consultant`/`consultant-builder` role slugs registered; new `consultant-profile` artifact_type schema (singleton path, additional frontmatter fields, body sections, atomic-overwrite policy)
+- `rules/context-isolation.md` — ACL templates for `role-consultant` (5 read paths — tightest scope in the system) and `role-consultant-builder` (9 read paths)
+
+#### Templates
+- `templates/role-verification-checklists.md` — bumped Checklist Version 2 → 3; new `#role-consultant-builder` section (13 self-check items including persona-domain match, list-size minimums, mode compliance, SAFETY-adjacent persona rules) with role-ba peer lens
+
+#### Scripts extended
+- `scripts/checkpoint.mjs` — Accept `--trigger consultant_built`; emit `consultant_built` event with payload `{consultant_profile_artifact_id, mode, peer_reviewer}`
+- `scripts/burn-rate-watch.mjs` — Read optional `budget.consultant` block; emit second `[$] BURN consultant` line with soft/hard cap percentages + dispatch count; new alerts for cap reach and dispatch-overrun (CONSULTANT_BUDGET_EXHAUSTED candidate)
+- `scripts/estimate-cost.mjs` — Compute consultant overhead (one-shot builder ~10k + 5 phases × ~15k × complexityMult); surface as `Consultant:` line in `[$] PRE-FLIGHT COST ESTIMATE` block
+- `scripts/state-store.mjs` — `init()` now writes `state/role-acls.json` from new `DEFAULT_ROLE_ACLS` constant (12 existing roles + 2 consultant entries); `DEFAULT_BUDGET` includes `consultant` block with Q10 defaults
+- `scripts/doctor.mjs` — 2 new health checks: `consultant_profile_freshness` (warns if brief mtime > profile mtime → patch/rebuild needed) and `consultant_acls_present` (verifies role-acls.json contains both consultant entries)
+
+#### Behind the flag
+All consultant behavior gated by `sc.config.json:consultant.enabled` (default true); set false for legacy CLARIFY→user behavior.
+
 ## [0.1.0] - 2026-05-26
 
 ### TL;DR

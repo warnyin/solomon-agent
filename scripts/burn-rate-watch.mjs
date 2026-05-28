@@ -73,6 +73,24 @@ async function main() {
     ? parseFloat((tokensUsed / budget.tokens_budget * 100).toFixed(1))
     : 0;
 
+  // Consultant bucket (per design/consultant-feature.md Q10).
+  // Optional: budget.consultant may be absent on legacy projects → no extra output.
+  const consultant = budget.consultant || null;
+  let consultantUsd = 0;
+  let consultantPctSoft = 0;
+  let consultantPctHard = 0;
+  let consultantDispatchesPct = 0;
+  if (consultant) {
+    const cTokensUsed = consultant.tokens_used || 0;
+    consultantUsd = parseFloat(((cTokensUsed / 1_000_000) * USD_PER_M_TOKEN).toFixed(2));
+    const soft = consultant.soft_limit_usd || 2.0;
+    const hard = consultant.hard_limit_usd || 5.0;
+    consultantPctSoft = parseFloat((consultantUsd / soft * 100).toFixed(1));
+    consultantPctHard = parseFloat((consultantUsd / hard * 100).toFixed(1));
+    const cap = consultant.max_dispatches_per_phase || 10;
+    consultantDispatchesPct = parseFloat(((consultant.dispatches_this_phase || 0) / cap * 100).toFixed(1));
+  }
+
   const sample = {
     at: now.toISOString(),
     phase,
@@ -81,6 +99,12 @@ async function main() {
     usd_estimate: parseFloat(usdUsed.toFixed(2)),
     pct_of_budget: pctOfBudget,
     projected_final_usd: projectedFinalUsd,
+    ...(consultant ? {
+      consultant_usd_used: consultantUsd,
+      consultant_pct_of_soft: consultantPctSoft,
+      consultant_pct_of_hard: consultantPctHard,
+      consultant_dispatches_pct: consultantDispatchesPct,
+    } : {}),
     schema_version: 1,
   };
 
@@ -98,7 +122,22 @@ async function main() {
     alerts.push(`SPIKE: ${tokensPerMin} tok/min (3× last ${last.tokens_per_min})`);
   }
 
+  // Consultant-specific alerts (per rules/escalation.md #17 CONSULTANT_BUDGET_EXHAUSTED).
+  if (consultant) {
+    if (consultantPctHard >= 100) {
+      alerts.push(`consultant.usd=$${consultantUsd} >= hard cap → escalate CONSULTANT_BUDGET_EXHAUSTED (hard)`);
+    } else if (consultantPctSoft >= 100) {
+      alerts.push(`consultant.usd=$${consultantUsd} >= soft cap → CONSULTANT_BUDGET_EXHAUSTED (soft) — non-blocking`);
+    }
+    if (consultantDispatchesPct >= 100) {
+      alerts.push(`consultant dispatches ${consultant.dispatches_this_phase}/${consultant.max_dispatches_per_phase || 10} reached → bypass consultant for remaining phase`);
+    }
+  }
+
   console.log(`[$] BURN — ${pctOfBudget}% used · ${(tokensPerMin / 1000).toFixed(1)}k tok/min · projected final $${projectedFinalUsd}${estimate ? ` (estimate $${estimate.expected_usd})` : ''}`);
+  if (consultant) {
+    console.log(`[$] BURN consultant — $${consultantUsd} (${consultantPctSoft}% of soft, ${consultantPctHard}% of hard) · dispatches ${consultant.dispatches_this_phase || 0}/${consultant.max_dispatches_per_phase || 10} this phase`);
+  }
   for (const a of alerts) console.log(`[$] ALERT: ${a}`);
 }
 

@@ -21,6 +21,7 @@ Owner-ceo MUST emit a checkpoint via `scripts/checkpoint.mjs` at EVERY trigger b
 | `interview_round_end` | After Discovery Interview each round | checkpoint with brief draft snapshot |
 | `time_threshold` | Every 15min wall-clock (heartbeat) | lightweight checkpoint with phase/role only |
 | `manual` | `/solomon-agent:status` or `/solomon-agent:resume` invocation | refresh broadcast + checkpoint |
+| `consultant_built` | After `state/artifacts/consultant-profile.md` reaches `status: approved` at DISCOVERY exit (also fired on `mode=rebuild` after material-pivot peer review) | checkpoint with `consultant_profile_artifact_id` + `mode` (initial / patch / rebuild); blocks DISCOVERY phase exit until written (per `rules/discovery-interview-protocol.md §Consultant Build Step`) |
 
 ## Checkpoint File Format
 
@@ -132,6 +133,7 @@ Defined as: a deliverable that passes VERIFY phase exit AND has `feature_id` tag
 - `feature_completed` — feature_id, artifacts[]
 - `resume_attempted` — by_user_command, success, next_action
 - `role_refused_premature_dispatch` — role, expected_active
+- `consultant_built` — consultant_profile_artifact_id, mode (initial|patch|rebuild), peer_reviewer (default `role-ba`)
 
 ## Cost Note
 

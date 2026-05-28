@@ -222,7 +222,7 @@ Bypass: `sc.config.json: {"cost_transparency": {"preflight": false}}` (ไม่
 
 ## 🩺 `/solomon-agent:doctor` — Health Check (Round 17)
 
-15 checks: node version, manifests, scripts runnable, hook schema, role/command/skill counts, HMAC chain, codemap/KB freshness
+17 checks: node version, manifests, scripts runnable, hook schema, role/command/skill counts, consultant profile staleness + ACL presence, HMAC chain, codemap/KB freshness
 
 ```
 /solomon-agent:doctor              # quick check

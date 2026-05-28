@@ -136,6 +136,51 @@ else check('node_version', 'fail', `Node ${process.versions.node} < 18 required`
   }
 }
 
+// 12.5 consultant_profile_freshness — warn if brief changed but profile wasn't patched/rebuilt
+//      Per design/consultant-feature.md Q6: /inject mutations should trigger
+//      mode=patch or mode=rebuild; a profile older than the brief means the
+//      consultant is answering with stale knowledge_frames.
+{
+  const profilePath = path.join(STATE_DIR, 'artifacts/consultant-profile.md');
+  const briefPath = path.join(STATE_DIR, 'artifacts/discovery-brief.md');
+  if (!await exists(profilePath) && !await exists(briefPath)) {
+    check('consultant_profile_freshness', 'pass', 'no consultant yet (pre-DISCOVERY)');
+  } else if (!await exists(profilePath)) {
+    check('consultant_profile_freshness', 'warn', 'discovery-brief exists but consultant-profile not built — DISCOVERY exit gate not yet reached');
+  } else if (!await exists(briefPath)) {
+    check('consultant_profile_freshness', 'fail', 'consultant-profile exists but discovery-brief missing — invariant violation');
+  } else {
+    try {
+      const [pStat, bStat] = await Promise.all([fs.stat(profilePath), fs.stat(briefPath)]);
+      const driftMs = bStat.mtimeMs - pStat.mtimeMs;
+      if (driftMs > 0) {
+        const driftMin = (driftMs / 60_000).toFixed(1);
+        check('consultant_profile_freshness', 'warn', `brief modified ${driftMin}min after profile — run mode=patch (non-pivotal) or escalate CONSULTANT_REBUILD_REQUIRED (pivotal)`);
+      } else {
+        check('consultant_profile_freshness', 'pass', `profile up-to-date with brief (built ${(-driftMs / 60_000).toFixed(1)}min after)`);
+      }
+    } catch (e) {
+      check('consultant_profile_freshness', 'warn', `stat failed: ${e.message}`);
+    }
+  }
+}
+
+// 12.6 consultant_acls_present — verify state/role-acls.json contains consultant entries
+//      Per rules/context-isolation.md + state-store.mjs DEFAULT_ROLE_ACLS.
+{
+  const acls = await readJsonSafe(path.join(STATE_DIR, 'role-acls.json'));
+  if (!acls) {
+    check('consultant_acls_present', 'pass', 'no role-acls.json yet (pre-init)');
+  } else {
+    const missing = ['role-consultant', 'role-consultant-builder'].filter(r => !acls[r] || acls[r].length === 0);
+    if (missing.length === 0) {
+      check('consultant_acls_present', 'pass', 'role-consultant + role-consultant-builder ACLs present');
+    } else {
+      check('consultant_acls_present', 'fail', `missing ACL entries: ${missing.join(', ')} — re-init or hand-add per rules/context-isolation.md`);
+    }
+  }
+}
+
 // 13. hmac_chain
 {
   const verifyScript = path.join(ROOT, 'scripts/verify-log.mjs');

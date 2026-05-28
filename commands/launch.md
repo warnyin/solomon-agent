@@ -84,6 +84,7 @@ This command body is delegation-only. All decomposition, role dispatch, conflict
 ## 6. On owner return
 
 - **First turn ALWAYS opens with `[BLUE] DISCOVERY INTERVIEW`** — owner-ceo interviews the user to fill `state/artifacts/discovery-brief.md` (per `rules/discovery-interview-protocol.md`) BEFORE any role dispatch. User answers → next round → stops at confidence ≥ 0.85, user says "ลุย", or 5 rounds. To skip entirely: `sc.config.json:discovery_interview.skip = true` (not recommended).
+- **After interview stop, owner dispatches `role-consultant-builder`** (per `design/consultant-feature.md` + `rules/discovery-interview-protocol.md §Consultant Build Step`) to synthesize `state/artifacts/consultant-profile.md` from the brief. `role-ba` peer-reviews it; checkpoint `consultant_built` fires; only THEN does the DISCOVERY phase proper begin. This step adds ~10k tokens (one-shot) and is gated by `sc.config.json:consultant.enabled` (default true). From that point onward, role `## Needs-Input: type=CLARIFY` requests are batched to `role-consultant` instead of always interrupting the user — see `rules/needs-input-protocol.md §Consultant Layer`.
 - If owner completed → final report at `state/artifacts/final-report.md`; show Executive Summary section
 - If owner escalated → escalation block already surfaced; user replies; owner-ceo can be re-invoked via `/solomon-agent:inject` or `/solomon-agent:replay`
 - If owner crashed → suggest `/solomon-agent:failover` (Round 6 Gap #89)

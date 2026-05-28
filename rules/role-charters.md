@@ -88,6 +88,22 @@
 - **Anti-scope**: technical content production (→ originating roles); SD synthesizes, never invents
 - **Hand-off to**: owner (final assembly)
 
+## role-consultant-builder (Consultant Persona Builder) — `color: teal`, `model: sonnet`
+- **Scope**: one-shot synthesis of per-project consultant persona from `state/artifacts/discovery-brief.md` + `state/artifacts/confidence.json`; modes `initial | patch | rebuild` per `design/consultant-feature.md`
+- **Inputs**: discovery-brief, confidence, (patch|rebuild) prev consultant-profile + delta/pivot reason
+- **Outputs**: `state/artifacts/consultant-profile.md` (artifact_type=`consultant-profile`) — frontmatter sections: identity, expertise{primary, secondary}, outside_scope[], knowledge_frames[], domain_analogs[], voice_style + 200-300 word narrative body
+- **Anti-scope**: answering domain questions (that is `role-consultant`'s job); reading other roles' artifacts; dispatching other agents
+- **Hand-off to**: owner-ceo (which then dispatches role-ba for peer review per `rules/role-strictness-protocol.md` peer-review matrix)
+- **Dispatched at**: DISCOVERY interview stop (mode=initial); `/inject` material pivot after user confirms `CONSULTANT_REBUILD_REQUIRED` (mode=rebuild); `/inject` non-pivotal brief change (mode=patch)
+
+## role-consultant (Project Consultant) — `color: teal`, `model: sonnet`
+- **Scope**: answer batched CLARIFY-type Needs-Input questions from roles using `state/artifacts/discovery-brief.md` + `state/artifacts/consultant-profile.md`; extrapolate within declared expertise areas with mandatory provenance tagging
+- **Inputs**: consultant-profile (own persona), discovery-brief (source of truth), `<QUESTIONS>` block from owner-ceo (batch of pending Needs-Input)
+- **Outputs**: JSON object embedded in reply (NOT a file): `{ answers[].{question_id, answer, provenance.{brief[], extrapolation[], inference[]}, confidence, caveats[], defer_to_user}, cross_question_notes }` — see `design/consultant-feature.md` for full contract
+- **Anti-scope**: writing artifacts; binding business/legal/spend decisions; questions whose domain appears in own profile's `outside_scope[]`; engaging user directly
+- **Hand-off to**: owner-ceo (which parses JSON, injects accepted answers back into asking roles, appends defers to `[BLUE] CONSULTANT-DEFER` batch)
+- **Dispatched at**: every CLARIFY Needs-Input where `consult_first != false AND user_only != true`, batched up to N=5 per dispatch (per `rules/needs-input-protocol.md` §Consultant Layer)
+
 ---
 
 ## owner-ceo (Meta-Owner) — `color: magenta`, `model: opus`

@@ -44,7 +44,7 @@ Project-type-specific insertions per `rules/project-templates.md`:
 
 ```
 .claude-plugin/{plugin.json,marketplace.json}
-agents/{owner-ceo,backup-owner,role-*}.md       (12 agents)
+agents/{owner-ceo,backup-owner,role-*}.md       (14 agents — 10 roles + owner + backup + 2 consultant)
 commands/{launch,status,inject,abort,replay,failover,cost-report,compact,stats}.md
 rules/{role-charters,escalation,communication-protocol,...}.md
 skills/{meta-orchestration,escalation-protocol,shared-state}/SKILL.md

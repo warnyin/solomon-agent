@@ -10,7 +10,7 @@ state/artifacts/{ulid}-{phase}-{role}-{kind}.md
 
 - `ulid`: sortable, written by state-store
 - `phase`: DISCOVERY|DESIGN|BUILD|VERIFY|HANDOFF|REWORK|DEPLOY|DATA-MODEL|DESIGN-NATIVE
-- `role`: short role slug (pm|ba|sa|tl|dev|qa|devsecops|security|infra|sd|owner|arbiter)
+- `role`: short role slug (pm|ba|sa|tl|dev|qa|devsecops|security|infra|sd|owner|arbiter|consultant|consultant-builder)
 - `kind`: maps to `artifact_type`
 
 ## Frontmatter (REQUIRED on every artifact)
@@ -89,6 +89,12 @@ Owner promotes `ready_for_review → approved` only after peer (+ adversarial fo
 
 ### `code-map` (brownfield)
 - `## Stack`, `## Entry Points`, `## Modules`, `## Test Coverage Present`, `## Conventions Detected`, `## Integration Points`
+
+### `consultant-profile` (per `design/consultant-feature.md`)
+- File path is a **fixed slot**: `state/artifacts/consultant-profile.md` (one per project, not ULID-prefixed) — singleton governed by `role-consultant-builder` modes initial/patch/rebuild
+- Frontmatter ADDITIONAL fields beyond the common schema: `mode (initial|patch|rebuild)`, `identity{title, years_experience, prior_work[]}`, `expertise{primary[], secondary[]}`, `outside_scope[].{field, reason}`, `knowledge_frames[].{frame, derived_from[]}`, `domain_analogs[].{name, similarity, difference}`, `voice_style{tone, uncertainty_phrase, refusal_phrase}`
+- Body sections: narrative biography (200-300 words); optional `## Patch History` (patch mode); optional `## Pivot Note` (rebuild mode); standard `## Handoff`
+- Singleton overwrite policy: `state-store.writeArtifact()` (or direct Write by builder) replaces the file atomically; prior version archived to `state/archive/consultant-profile/<timestamp>.md` before overwrite
 
 ## Cross-Reference Format
 Reference another artifact: `[[01H...ULID#section-anchor]]`. `validate-artifact.mjs` semantic pass (Round 5 #20) verifies referenced artifact + section exists; non-matching → `semantic_validation_warning` event.
