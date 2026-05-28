@@ -19,7 +19,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "node --test scripts/",
+    "test": "node --test",
     "lint:frontmatter": "node scripts/lint-frontmatter.mjs agents/ commands/",
     "lint:plugin": "node -e \"JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json'))\" && node -e \"JSON.parse(require('fs').readFileSync('.claude-plugin/marketplace.json'))\" && node -e \"JSON.parse(require('fs').readFileSync('hooks/hooks.json'))\"",
     "build:skills": "node scripts/build-skills.mjs",

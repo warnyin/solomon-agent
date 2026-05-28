@@ -5,7 +5,7 @@ description: File-based shared state convention. Artifact naming, atomic writes,
 
 # Skill: shared-state
 
-<!-- DO NOT EDIT MANUALLY. Generated from rules/communication-protocol.md -->
+<!-- Hand-maintained. Summarizes rules/communication-protocol.md — keep in sync. Validated by scripts/build-skills.mjs. -->
 
 ## File Layout
 - `state/project.json` — phase, status, escalations

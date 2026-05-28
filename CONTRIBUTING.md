@@ -59,7 +59,7 @@ cd solomon-agent
 ## Adding a rule
 1. `rules/<name>.md`
 2. Reference from consumers
-3. Skill-generatable? Register in `scripts/build-skills.mjs:SKILL_MAP`
+3. Recurring how-to worth a skill? Add `skills/<name>/SKILL.md` (see [Add a skill](docs/extending-add-skill.md))
 
 ## Code Style
 - Node ESM only

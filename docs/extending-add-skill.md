@@ -38,6 +38,7 @@ Scope: 1 cognitive technique. NOT a kitchen sink.
 
 ```markdown
 ---
+name: <name>
 description: <1-line — what technique, when used, who uses it>
 ---
 
@@ -80,7 +81,7 @@ Edit:
 ### Step 4 — Verify
 
 ```bash
-node scripts/build-skills.mjs --check    # verifies skill drift vs rules
+node scripts/build-skills.mjs --check    # validates skill frontmatter (name + description)
 node scripts/lint-frontmatter.mjs skills/
 node scripts/doctor.mjs                  # skills_present check
 node scripts/dry-run-harness.mjs --scenario tests/fixtures/launch-simulation/basic.json

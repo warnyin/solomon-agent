@@ -5,7 +5,7 @@ description: When to STOP and ask the user vs decide alone. 14 escalation condit
 
 # Skill: escalation-protocol
 
-<!-- DO NOT EDIT MANUALLY. Generated from rules/escalation.md -->
+<!-- Hand-maintained. Summarizes rules/escalation.md — keep in sync. Validated by scripts/build-skills.mjs. -->
 
 ## Quick Reference (14 conditions)
 
