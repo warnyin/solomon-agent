@@ -24,30 +24,32 @@ The script returns JSON:
   "checks": [
     {"name": "node_version", "status": "pass", "msg": "Node 20.10.0 (>= 18 required)"}
   ],
-  "summary": "14 passed, 1 warned, 0 failed"
+  "summary": "16 passed, 1 warned, 0 failed"
 }
 ```
 
 ## 3. Surface to user
 
 ```
-[DOC] Solomon Agent Doctor — 14 passed · 1 warned · 0 failed
+[DOC] Solomon Agent Doctor — 16 passed · 1 warned · 0 failed
 
-✓ node_version           Node 20.10.0 (>= 18 required)
-✓ plugin_manifest        .claude-plugin/plugin.json valid
-✓ marketplace_manifest   .claude-plugin/marketplace.json valid
-✓ scripts_runnable       18 scripts loadable
-✓ hook_schema            hooks/hooks.json nested format OK
-✓ rules_present          22 rules files
-✓ commands_present       14 commands
-✓ agents_present         12 agents (10 roles + owner + backup)
-✓ skills_present         7 skills
-✓ templates_present      6 templates
-✓ project_state          state/project.json schema valid
-✓ artifacts_signed       18 artifacts have signed_off_by[]
-✓ hmac_chain             events.ndjson chain verified (847 events)
-⚠ codemap_stale          docs/codemap/ last built 6 days ago (suggest /solomon-agent:codemap --rebuild)
-✓ kb_index               docs/kb/manifest.json fresh
+✓ node_version              Node 20.10.0 (>= 18 required)
+✓ plugin_manifest           .claude-plugin/plugin.json valid
+✓ marketplace_manifest      .claude-plugin/marketplace.json valid
+✓ scripts_runnable          21 scripts loadable
+✓ hook_schema               hooks/hooks.json nested format OK
+✓ rules_present             22 rules files
+✓ commands_present          14 commands
+✓ agents_present            14 agents (10 roles + owner + backup + consultant + consultant-builder)
+✓ skills_present            7 skills
+✓ templates_present         6 templates
+✓ project_state             state/project.json schema valid
+✓ artifacts_signed          18 artifacts have signed_off_by[]
+✓ consultant_profile_freshness  profile up-to-date with brief (built 4.2min after)
+✓ consultant_acls_present       role-consultant + role-consultant-builder ACLs present
+✓ hmac_chain                events.ndjson chain verified (847 events)
+⚠ codemap_stale             docs/codemap/ last built 6 days ago (suggest /solomon-agent:codemap --rebuild)
+✓ kb_index                  docs/kb/manifest.json fresh
 
 Run `/solomon-agent:doctor --verbose` for full per-check detail.
 Run `/solomon-agent:doctor --fix` for safe auto-repairs.

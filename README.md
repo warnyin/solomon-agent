@@ -191,7 +191,7 @@ Full charters: [`rules/role-charters.md`](rules/role-charters.md) · [`docs/role
 /solomon-agent:doctor
 ```
 
-You should see 14-15 checks pass. If anything fails, see [Troubleshooting](#-troubleshooting).
+You should see 16-17 checks pass (15 base + 2 consultant — `consultant_profile_freshness` and `consultant_acls_present`). If anything fails, see [Troubleshooting](#-troubleshooting).
 
 ---
 
@@ -658,15 +658,16 @@ Copyright © 2026 ArmLazySong
 | | Feature | คืออะไร |
 |---|---|---|
 | 🎤 | **Discovery Interview** | Owner-CEO ถาม 3-5 คำถามต่อรอบ (สูงสุด 5 รอบ) ครอบคลุม 10 มิติ ก่อน dispatch role ใดๆ — กัน rework |
+| 🧑‍💼 | **Professional Consultant Agent** | หลังจบ interview ระบบสร้าง consultant persona เฉพาะโปรเจคจาก brief อัตโนมัติ ตอน role ใดๆ มี `## Needs-Input: type=CLARIFY` คำถามจะถูก batch (ไม่เกิน 5) ส่งให้ consultant ตอบพร้อม provenance + confidence + defer flag แทนรบกวน user ทุกครั้ง ดูรายละเอียดใน `design/consultant-feature.md` |
 | 🏛️ | **10-Role Virtual Company** | PM / BA / SA / Tech Lead / Developer / QA / DevSecOps / Security / Infra / Service Desk |
 | ✅ | **Sign-Off Gates** | ทุก artifact: self → peer → owner; safety-class +adversarial. ไม่มีอะไรผ่านโดยไม่ตรวจ |
 | 🧠 | **Creative + Security Mindset** | Rule of 3 + STRIDE + assume-hostile-input + fail-closed + least-privilege + no-secrets-in-text |
-| 💾 | **Resumable Checkpoints** | 6 triggers; `/solomon-agent:resume` ต่อจาก checkpoint ล่าสุด |
+| 💾 | **Resumable Checkpoints** | 7 triggers (role return / phase exit / feature complete / escalation / interview round / 15-min heartbeat / consultant built); `/solomon-agent:resume` ต่อจาก checkpoint ล่าสุด |
 | 📚 | **Auto Knowledge Base** | ทุก artifact index ใน `docs/kb/` by-phase/role/type/feature + decisions/risks/glossary + ค้น via `/solomon-agent:kb <query>` |
 | 🗺️ | **Auto Codemap** | `docs/codemap/` rebuild ทุก feature complete — รองรับ 8+ ภาษา |
 | 💰 | **Cost Transparency** | Pre-flight (band low—mid—high) → mid-flight alerts (50/80/95%) → retrospective + calibration |
 | 🎯 | **Meta-Command Router** | `/solomon-agent:do "พิมพ์อะไรก็ได้"` — อ่าน state, classify intent, ถามกลับถ้าไม่แน่ใจ |
-| 🩺 | **Health Check** | `/solomon-agent:doctor` ตรวจ 15 ข้อ — manifests, scripts, hooks, HMAC, KB freshness |
+| 🩺 | **Health Check** | `/solomon-agent:doctor` ตรวจ 17 ข้อ — manifests, scripts, hooks, HMAC, KB freshness, consultant profile staleness + ACL presence |
 | 🔒 | **Defense in Depth** | HMAC chain + atomic-rename + path-traversal guards + secret-pattern hooks + per-role ACLs |
 | 🌏 | **2 ภาษา** | Escalation + Interview + Meta-router keyword ใช้ได้ทั้ง ไทย และ อังกฤษ |
 
@@ -691,7 +692,7 @@ Copyright © 2026 ArmLazySong
 /solomon-agent:doctor
 ```
 
-ต้องเห็น 14-15 checks ผ่าน
+ต้องเห็น 16-17 checks ผ่าน (15 ฐาน + 2 consultant — `consultant_profile_freshness` และ `consultant_acls_present`)
 
 ---
 
