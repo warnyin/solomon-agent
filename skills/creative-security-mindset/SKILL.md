@@ -1,4 +1,5 @@
 ---
+name: creative-security-mindset
 description: Cognitive mindset every role MUST apply to its work — generate ≥ 3 alternatives before picking one (creativity) + run STRIDE-on-everything + secure-default-bias + assume-hostile-input (security vigilance). Prevents "first-idea-wins" output and "happy-path-only" thinking.
 ---
 

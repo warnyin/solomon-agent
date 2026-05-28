@@ -1,4 +1,5 @@
 ---
+name: idea-discovery-interview
 description: Human-like deep idea-probing interview owner-ceo runs IMMEDIATELY on /solomon-agent:launch BEFORE any role dispatch. Doubts every assumption, asks 5-Whys + Premortem + Inverse + Stakeholder + Reference triangulation, fills discovery-brief.md until confidence ≥ 0.85 or user explicitly says "go". Prevents downstream rework by forcing clarity at intake.
 ---
 

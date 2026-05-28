@@ -1,4 +1,5 @@
 ---
+name: meta-orchestration
 description: Decompose / dispatch / collect / decide loop for orchestrating 10 role-based agents. Pattern catalog (parallel fan-out, sequential pipeline, map-reduce, retry-on-class). Used by owner-ceo.
 ---
 

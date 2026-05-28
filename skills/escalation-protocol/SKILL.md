@@ -1,4 +1,5 @@
 ---
+name: escalation-protocol
 description: When to STOP and ask the user vs decide alone. 14 escalation conditions covering safety, ambiguity, decision-gate, scope-explosion, dead-end, budget, injection, lock, version, language, long-session, dependency-version, migration-integrity, MCP-auth. Used by owner-ceo and role agents.
 ---
 

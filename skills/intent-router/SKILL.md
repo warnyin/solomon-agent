@@ -1,4 +1,5 @@
 ---
+name: intent-router
 description: State-aware intent classifier used by /solomon-agent:do meta-command. Reads project state + parses freeform user text → picks the right /solomon-agent:* command. Confidence-gated; asks back when ambiguous (max 3 rounds). Pure additive layer over existing commands — never replaces or modifies them.
 ---
 

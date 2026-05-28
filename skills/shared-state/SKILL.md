@@ -1,4 +1,5 @@
 ---
+name: shared-state
 description: File-based shared state convention. Artifact naming, atomic writes, HMAC signatures, locking, frontmatter schema. Used by all roles via state-store.mjs.
 ---
 

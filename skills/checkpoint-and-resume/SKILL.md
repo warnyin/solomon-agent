@@ -1,4 +1,5 @@
 ---
+name: checkpoint-and-resume
 description: How owner-ceo writes frequent recoverable checkpoints + broadcasts role state so any operator can resume mid-flight after session drop. Includes the trigger matrix, role discipline ("am I active?"), and the 6-step resume procedure used by /solomon-agent:resume. Bound by rules/handoff-checkpoint-protocol.md.
 ---
 
