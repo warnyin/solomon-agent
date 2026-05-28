@@ -4,13 +4,43 @@
 
 ## Binding Rule
 
-`owner-ceo` SHALL NOT dispatch role-pm / role-ba / role-sa / any role on first turn of a new project (or after `/solomon-agent:inject` that materially expands scope) UNTIL `state/artifacts/discovery-brief.md` exists with:
+`owner-ceo` SHALL NOT dispatch role-pm / role-ba / role-sa / any role on first turn of a new project (or after `/solomon-agent:inject` that materially expands scope) UNTIL **BOTH**:
 
-- `confidence.overall >= 0.85`, OR
-- `user_explicit_go == true` (user typed "ลุย" / "go" / "เริ่มเลย" / "พอแล้ว"), OR
-- `interview_rounds >= 5` (max budget reached → unresolved gaps recorded as `assumptions[]` with `risk: high`)
+1. `state/artifacts/discovery-brief.md` exists with:
+   - `confidence.overall >= 0.85`, OR
+   - `user_explicit_go == true` (user typed "ลุย" / "go" / "เริ่มเลย" / "พอแล้ว"), OR
+   - `interview_rounds >= 5` (max budget reached → unresolved gaps recorded as `assumptions[]` with `risk: high`)
+
+2. `state/artifacts/consultant-profile.md` exists with `status: approved` (self + peer signed off, per **§Consultant Build Step** below).
 
 Violation → owner-ceo MUST escalate `AMBIGUITY` (per `rules/escalation.md` §1) and refund any pre-dispatch token spend by aborting in-flight Agent calls.
+
+## Consultant Build Step
+
+Per `design/consultant-feature.md`, owner-ceo MUST insert a one-shot persona build between interview-stop and DISCOVERY-phase role dispatches.
+
+```
+... interview stop condition reached ...
+   │
+   ▼
+DISPATCH role-consultant-builder (mode=initial)
+   │ inputs: state/artifacts/discovery-brief.md, state/artifacts/confidence.json
+   │ output: state/artifacts/consultant-profile.md (status=ready_for_review)
+   ▼
+DISPATCH role-ba (peer review of consultant-profile)
+   │ promotes status: ready_for_review → approved (or rejected → builder revises)
+   ▼
+CHECKPOINT trigger=consultant_built  (per rules/handoff-checkpoint-protocol.md — deferred)
+   │
+   ▼
+DISCOVERY phase proper begins (role-pm + role-ba domain dispatched)
+```
+
+**Skip rules:**
+- `sc.config.json:consultant.enabled = false` → skip both builder + peer review; emit `[YELLOW] Consultant layer disabled per config. CLARIFY requests will surface directly to user (legacy behavior).` Logged as Decision in memory MCP.
+- `sc.config.json:discovery_interview.skip = true` AND `confidence.overall < 0.5` → escalate `BRIEF_INSUFFICIENT`; do not attempt build (consultant requires grounding).
+
+**On rebuild (per /inject pivot, deferred):** dispatch builder with `mode=rebuild`, then peer review again, then emit `consultant_built` checkpoint (second-time).
 
 ## Interview Lifecycle
 
