@@ -2,7 +2,7 @@
 
 > Binding source: `rules/role-strictness-protocol.md`. Every role MUST run its `#<role>` checklist before declaring `status: ready_for_review`. Peer reviewer uses SAME checklist with verification lens. Items marked `[SAFETY]` cannot be waived.
 
-**Checklist Version:** 2
+**Checklist Version:** 3
 **Schema:** each item has `(id: snake_case_id)` for traceability into `signed_off_by[].passed_items[]` / `failed_items[]`.
 
 ---
@@ -210,6 +210,28 @@ Producer self-check before shipping `runbook` artifact + exec summary text:
 - [ ] (id: prd_alignment) Deliverables described match `prd` user stories
 
 **Peer (role-pm) lens:** does the runbook describe what was actually built, or an idealized version? Are exec claims defensible against the PRD?
+
+---
+
+## role-consultant-builder
+
+Producer self-check before shipping `consultant-profile` artifact:
+
+- [ ] (id: identity_domain_specific) `identity.title` is domain-specific (e.g., "Senior Service-Industry Operations Consultant"), not a generic "Product Consultant" / "Tech Advisor"
+- [ ] (id: years_experience_in_band) `identity.years_experience` is integer 8-20 (lower = lacks gravitas, higher = loses plausibility)
+- [ ] (id: prior_work_min_3) `identity.prior_work[]` has 3-5 sector-plausible engagements (no claims about real people; composites only)
+- [ ] (id: expertise_split_named) `expertise.primary[]` has 3-5 entries AND `expertise.secondary[]` has 2-5 entries, all related to brief's domain
+- [ ] (id: outside_scope_min_3) `outside_scope[]` has ≥ 3 entries covering binding business decisions (payment provider, brand, legal, pricing, hiring, or brief's `anti_scope[]`)
+- [ ] (id: knowledge_frames_min_5) `knowledge_frames[]` has ≥ 5 entries; each `derived_from[]` points to actual paths in `discovery-brief.md` (no invented frames)
+- [ ] (id: domain_analogs_eq_3) `domain_analogs[]` has exactly 3 entries with `similarity` + `difference` per entry; analog names are well-known (or from brief's references) — not invented companies
+- [ ] (id: voice_style_complete) `voice_style` has all three fields filled: `tone`, `uncertainty_phrase`, `refusal_phrase`
+- [ ] (id: narrative_200_to_300_words) Narrative body below frontmatter is 200-300 words; covers training/background, engagement types, philosophy, communication style
+- [ ] (id: no_real_persons) `[SAFETY-adjacent]` No claims about real living people or specific company employees; personas are composites
+- [ ] (id: no_behavior_overrides) Profile does NOT contain instructions to `role-consultant` beyond persona (no rules / no Method changes — those live in `agents/role-consultant.md`)
+- [ ] (id: brief_confidence_floor) If `confidence.overall < 0.5` → escalated `BRIEF_INSUFFICIENT` instead of attempting build
+- [ ] (id: mode_compliance) For `mode=patch`: identity.title + years_experience preserved; for `mode=rebuild`: includes `## Pivot Note` body section with diff vs prior persona
+
+**Peer (role-ba) lens:** does the persona actually match the brief's WHO + project_type + WHY? Are the `outside_scope[]` entries the things only the user/business can decide? Are the `knowledge_frames` accurate distillations or hallucinated additions?
 
 ---
 

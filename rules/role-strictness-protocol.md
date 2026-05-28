@@ -48,6 +48,7 @@ Owner-ceo MUST NOT advance phase until ALL phase-exit roles have signed-off arti
 | role-security | role-tech-lead | Mitigation feasibility check |
 | role-infra | role-devsecops | Pipeline compatibility |
 | role-service-desk | role-pm | Exec-summary truthfulness vs. PRD |
+| role-consultant-builder | role-ba | Persona accuracy: does the synthesized consultant match the brief's domain + WHO + WHY? (per `design/consultant-feature.md` Q7) |
 
 Peer reviewer uses SAME checklist (different lens: producer asks "did I do X?", peer asks "did producer actually do X?"). Peer dispatched by owner-ceo as a SEPARATE `Agent({subagent_type: <peer-role>, prompt: "Peer-review artifact 01H... per templates/role-verification-checklists.md#<role>"})` call — never assumed automatic.
 
@@ -117,6 +118,7 @@ For `safety-class` artifacts, owner dispatches an additional adversarial pass:
 - `code` touching auth/payments/PII → `role-security` adversarial (red-team lens: "how would I exploit this?")
 - `runbook` for prod deploys → `role-qa` adversarial (chaos lens: "what fails if X then Y?")
 - `security-audit` self-produced by role-security → `role-tech-lead` cross-check (independence: "did security miss feasibility tradeoff?")
+- **Consultant answers** returned by `role-consultant` when `question_class in safety-class AND provenance.brief == []` → `role-security` adversarial per-answer (red-team lens: "would acting on this answer expose auth/payments/PII/deploy/legal risk?"). Reject 2× same answer triggers anti-pingpong defer (per `rules/needs-input-protocol.md §Consultant Anti-Loop`). NOTE: the consultant *profile* itself does NOT take an adversarial pass — risk surface is the answer, not the persona (per `design/consultant-feature.md` Q7).
 
 Adversarial reviewer cannot also be the producer's standard peer (avoid collusion). If matrix conflict → owner-ceo MUST escalate `DECISION_GATE` for reviewer assignment.
 

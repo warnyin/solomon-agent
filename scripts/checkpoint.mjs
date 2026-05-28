@@ -26,7 +26,8 @@ const HOOK_ERROR_LOG = path.join(STATE_DIR, 'hook-errors.log');
 
 const VALID_TRIGGERS = new Set([
   'role_return', 'phase_exit', 'feature_complete',
-  'escalation_emitted', 'interview_round_end', 'time_threshold', 'manual'
+  'escalation_emitted', 'interview_round_end', 'time_threshold', 'manual',
+  'consultant_built'
 ]);
 
 function ulid() {
@@ -184,6 +185,14 @@ async function writeCheckpoint(args) {
     if (args.trigger === 'feature_complete') {
       await logEvent('feature_completed', { feature_id: args.feature_id || 'unknown', artifacts: completed.length });
     }
+  }
+
+  if (args.trigger === 'consultant_built') {
+    await logEvent('consultant_built', {
+      consultant_profile_artifact_id: args.consultant_profile_artifact_id || 'unknown',
+      mode: args.mode || 'initial',
+      peer_reviewer: args.peer_reviewer || 'role-ba'
+    });
   }
 
   return 0;

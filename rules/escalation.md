@@ -65,11 +65,29 @@ Per `rules/role-strictness-protocol.md`: artifact failed self-checklist with `fa
 
 **Worked example**: role-developer ships `code` artifact, self-verify finds `no_secrets_committed` failed (an `.env.example` had a real-looking placeholder). Producer must fix OR escalate. If fix attempted and `failed_items[]` still non-empty after 2 retries → `VERIFICATION_FAILED`: "role-developer code artifact 01H... failed safety-class checklist item `no_secrets_committed` after 2 retries. Options: (a) accept refactor proposal, (b) human review of diff, (c) abort and rescope."
 
+### 16. CONSULTANT_REBUILD_REQUIRED — per `design/consultant-feature.md` Q6 (relaxable)
+
+Owner detected that `/inject` content materially pivots the discovery-brief — touches `project_type`, `who.primary_user`, `what.deliverable_form`, or `why.problem` — and the current `state/artifacts/consultant-profile.md` no longer fits.
+
+**Worked example**: User originally requested a barbershop SaaS; consultant is "Senior Service-Industry Operations Consultant". User then injects "pivot — actually I want to ship this as a Flutter mobile app for personal trainers, not a SaaS for shop owners." Domain + WHO both changed. **Escalate**: "Consultant persona was built for SaaS barbershop ops. Your injected scope pivots to a mobile app for fitness trainers. Rebuild consultant? (a) Yes — full rebuild (mode=rebuild), (b) Patch only (keep persona, append new knowledge_frames), (c) Cancel inject and revert brief."
+
+On user confirm `(a)` → owner dispatches `role-consultant-builder` with `mode=rebuild` + `pivot_reason`.
+
+### 17. CONSULTANT_BUDGET_EXHAUSTED — per `design/consultant-feature.md` Q10 (NOT relaxable for hard limit)
+
+Two variants:
+- **Soft** (`consultant.budget.soft_limit_usd` reached): warn but continue; owner emits `[YELLOW] BURN — consultant approaching soft cap` non-blocking. NOT a STOP.
+- **Hard** (`consultant.budget.hard_limit_usd` OR `consultant.max_dispatches_per_phase` reached): escalate; subsequent CLARIFY requests bypass consultant → straight to defer batch.
+
+**Worked example**: BUILD phase has 6 parallel developers; consultant has been dispatched 11 times this phase (cap 10). **Escalate**: "Consultant cap reached for BUILD phase (10/10 dispatches). Remaining Needs-Input questions will surface directly to user via defer batch. Options: (a) raise cap to N for this phase, (b) accept defer-batch only behavior, (c) abort."
+
+Cap resets at next `phase_entry` event.
+
 ## Relaxation policy (per Round 2 Gap #13)
 
-`sc.config.json:escalation_relax` MAY include: `["AMBIGUITY", "DEAD_END", "LANGUAGE_DOWNGRADE_PROPOSAL", "DEPENDENCY_VERSION_MISMATCH"]`
+`sc.config.json:escalation_relax` MAY include: `["AMBIGUITY", "DEAD_END", "LANGUAGE_DOWNGRADE_PROPOSAL", "DEPENDENCY_VERSION_MISMATCH", "CONSULTANT_REBUILD_REQUIRED"]`
 
-MAY NEVER include (enforced by `scripts/validate-config.mjs`): `SAFETY`, `DECISION_GATE`, `SCOPE_EXPLOSION`, `INJECTION_DETECTED`, `MULTI_USER_LOCK`, `BUDGET_EXCEEDED`, `STATE_VERSION_MISMATCH`, `MIGRATION_INTEGRITY_FAILURE`, `MCP_AUTH`, `VERIFICATION_FAILED`
+MAY NEVER include (enforced by `scripts/validate-config.mjs`): `SAFETY`, `DECISION_GATE`, `SCOPE_EXPLOSION`, `INJECTION_DETECTED`, `MULTI_USER_LOCK`, `BUDGET_EXCEEDED`, `STATE_VERSION_MISMATCH`, `MIGRATION_INTEGRITY_FAILURE`, `MCP_AUTH`, `VERIFICATION_FAILED`, `CONSULTANT_BUDGET_EXHAUSTED` (hard variant only)
 
 ## Format of an escalation message
 
